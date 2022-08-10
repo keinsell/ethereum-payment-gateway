@@ -7,6 +7,7 @@ import random from "random-js";
 import signale from "signale";
 import schedule from "node-schedule";
 import chalk from "chalk";
+import { DomesticEvent, eventStorage } from "./event";
 
 const RPC_PROVIDER = "http://127.0.0.1:8545";
 
@@ -89,15 +90,20 @@ export async function getAvailableRotationWallet(): Promise<IRotationWallet> {
   }
 }
 
-function PaymentRequestCreatedEvent(paymentRequest: IPaymentRequest) {
-  signale.info(
-    `Generated new payment request ${chalk.green(paymentRequest.id)}`
-  );
-  signale.log(
-    `Escrow will await payment equal to ${chalk.yellowBright(
-      paymentRequest.amount
-    )} at ${chalk.yellowBright(paymentRequest.depositAddresss)}`
-  );
+class PaymentRequestCreatedEvent extends DomesticEvent {
+  constructor(request: IPaymentRequest) {
+    super("payment-request-created", { ...request });
+    this.data = request;
+  }
+
+  toConsole(): void {
+    signale.info(`Generated new payment request ${chalk.green(this.data.id)}`);
+    signale.log(
+      `Escrow will await payment equal to ${chalk.yellowBright(
+        this.data.amount
+      )} at ${chalk.yellowBright(this.data.depositAddresss)}`
+    );
+  }
 }
 
 export async function generatePaymentRequest() {
@@ -112,7 +118,7 @@ export async function generatePaymentRequest() {
 
   paymentRequestState.push(paymentRequest);
 
-  PaymentRequestCreatedEvent(paymentRequest);
+  new PaymentRequestCreatedEvent(paymentRequest);
 
   return paymentRequest;
 }
@@ -168,3 +174,5 @@ const job = schedule.scheduleJob(
   "1 * * * * *",
   performDeepCheckOfPaymentRequests
 );
+
+console.log(eventStorage);
