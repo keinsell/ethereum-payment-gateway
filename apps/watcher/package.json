@@ -1,0 +1,28 @@
+{
+  "name": "watcher",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts"
+  },
+  "volta": {
+    "node": "16.16.0"
+  },
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.0.13",
+    "big.js": "^6.2.1",
+    "chalk": "^5.0.1",
+    "nanoid": "^4.0.0",
+    "node-schedule": "^2.1.0",
+    "random-js": "^2.1.0",
+    "signale": "^1.4.0",
+    "web3": "^1.7.5",
+    "web3-eth": "^1.7.5",
+    "web3-eth-accounts": "^1.7.5"
+  },
+  "devDependencies": {
+    "ganache": "^7.4.0"
+  }
+}
