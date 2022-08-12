@@ -70,45 +70,32 @@ export async function initalizePayment() {
   return payment;
 }
 
-export async function checkPayment(payment: IPayment) {
-  const rotationWallet = getRotationWalletByAddress(payment.address);
+export async function checkPaymentsJob() {
+  const purchasesWithoutPayments = PaymentState.filter(
+    (payment) => payment.status === PaymentStatus.waitingForPayment
+  );
+  for (const payment of purchasesWithoutPayments) {
+    const rotationWallet = getRotationWalletByAddress(payment.address);
 
-  if (!rotationWallet) {
-    return;
-  }
-
-  updateConfirmedRotationWalletBalance(rotationWallet);
-
-  if (rotationWallet.balance.gte(payment.amount)) {
-    payment.status = PaymentStatus.confirmed;
-    new DomesticEvent(KnownEvents.paymentConfirmed, payment);
-  }
-
-  if (payment.status === PaymentStatus.confirmed) {
-    payment.status = PaymentStatus.completed;
-    new DomesticEvent(KnownEvents.paymentCompleted, payment);
-  }
-}
-
-export async function watchPayment(payment: IPayment) {
-  // Update status to waiting for payment
-  payment.status = PaymentStatus.waitingForPayment;
-  PaymentState.splice(PaymentState.indexOf(payment), 1, payment);
-
-  // TODO: Listen for unconfirmed payments until IPayment expiration time.
-
-  // TODO: Listend for confirmed balance of Purchase
-
-  // TODO: wait for payment
-}
-
-export async function startBackgroundCheckerService() {
-  return schedule.scheduleJob("* * * * * *", async () => {
-    const purchasesWithoutPayments = PaymentState.filter(
-      (payment) => payment.status === PaymentStatus.waitingForPayment
-    );
-    for (const payment of purchasesWithoutPayments) {
-      checkPayment(payment);
+    if (!rotationWallet) {
+      return;
     }
-  });
+
+    updateConfirmedRotationWalletBalance(rotationWallet);
+
+    if (rotationWallet.balance.gte(payment.amount)) {
+      payment.status = PaymentStatus.confirmed;
+      new DomesticEvent(KnownEvents.paymentConfirmed, payment);
+    }
+
+    if (payment.status === PaymentStatus.confirmed) {
+      payment.status = PaymentStatus.completed;
+      new DomesticEvent(KnownEvents.paymentCompleted, payment);
+    }
+  }
+}
+
+/** @deprecated Function should not be used in real-world enviroment, it will consume a lot of assets from RPC connection. */
+export async function startBackgroundCheckerService() {
+  return schedule.scheduleJob("* * * * * *", checkPaymentsJob);
 }

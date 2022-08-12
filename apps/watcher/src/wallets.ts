@@ -1,6 +1,13 @@
 import { Big } from "big.js";
 import { nanoid } from "nanoid";
-import { createNewEthereumWallet, w3rpc } from "./blockchain";
+import {
+  applyEthereumDecimalsToValue,
+  createNewEthereumWallet,
+  IBalanceChunk,
+  subscribeToEthereumTransactions,
+  w3rpc,
+  w3ws,
+} from "./blockchain.js";
 
 export interface IRotationWallet {
   id: string;
@@ -9,6 +16,10 @@ export interface IRotationWallet {
   unconfirmedBalance?: Big;
   isBusy: boolean;
   privateKey: string;
+}
+
+export interface IRotationWalletHistory {
+  timestamp: Date;
 }
 
 const RotationWalletState: IRotationWallet[] = [];
@@ -71,7 +82,18 @@ export async function updateConfirmedRotationWalletBalance(
 export async function watchForRotationWalletBalanceUpdate(
   wallet: IRotationWallet
 ) {
-  const unconfirmedBalance = new Big(0);
+  let unconfirmedBalance = new Big(0);
+  let isUpdated = false;
+
+  const pendingSubscription = await subscribeToEthereumTransactions({
+    toAddress: wallet.address,
+  });
+
+  pendingSubscription.balanceStream.on("data", (data: IBalanceChunk) => {
+    wallet.balance = new Big(data.balance);
+    wallet.unconfirmedBalance = new Big(data.unconfirmedValue);
+  });
+
   // Update wallet balance
   RotationWalletState.splice(RotationWalletState.indexOf(wallet), 1, wallet);
 }
