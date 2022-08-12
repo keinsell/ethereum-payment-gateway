@@ -8,6 +8,7 @@ import {
   useRotationWallet,
 } from "./wallets";
 import schedule from "node-schedule";
+import ms from "ms";
 
 export enum PaymentStatus {
   initalized = "INITALIZED",
@@ -26,6 +27,7 @@ export interface IPayment {
   amount: Big;
   address: string;
   status: PaymentStatus;
+  expiration: Date;
 }
 
 const PaymentState: IPayment[] = [];
@@ -38,6 +40,7 @@ export async function initalizePayment() {
     amount: new Big(randmizePaymentValue()),
     address: availableRotationWallet.address,
     status: PaymentStatus.initalized,
+    expiration: new Date(Date.now() + ms("15m")),
   };
 
   PaymentState.push(payment);
@@ -74,8 +77,13 @@ export async function checkPayment(payment: IPayment) {
 }
 
 export async function watchPayment(payment: IPayment) {
+  // Update status to waiting for payment
   payment.status = PaymentStatus.waitingForPayment;
   PaymentState.splice(PaymentState.indexOf(payment), 1, payment);
+
+  // TODO: Listen for unconfirmed payments until IPayment expiration time.
+
+  // TODO: Listend for confirmed balance of Purchase
 
   // TODO: wait for payment
 }

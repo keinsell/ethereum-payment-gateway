@@ -71,6 +71,7 @@ export async function updateConfirmedRotationWalletBalance(
 export async function watchForRotationWalletBalanceUpdate(
   wallet: IRotationWallet
 ) {
+  const unconfirmedBalance = new Big(0);
   // Update wallet balance
   RotationWalletState.splice(RotationWalletState.indexOf(wallet), 1, wallet);
 }
