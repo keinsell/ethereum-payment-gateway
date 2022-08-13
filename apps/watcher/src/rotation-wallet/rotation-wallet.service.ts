@@ -2,6 +2,7 @@ import {
   createWallet,
   getBalanceOfAddress,
 } from "../blockchain/blockchain.service";
+import { DomesticEvent } from "../infra/event";
 import {
   createRotationWalletFromAccount,
   findAvailableRotationWallet,
@@ -29,9 +30,15 @@ export async function updateConfirmedRotationWalletBalance(
 ) {
   const balance = await getBalanceOfAddress(wallet.address);
 
-  wallet.balance = balance;
+  if (balance.gt(wallet.balance)) {
+    new DomesticEvent("confirmedBalanceChanged", {
+      difference: balance.minus(wallet.balance),
+    });
 
-  updateRotationWallet(wallet);
+    wallet.balance = balance;
+
+    updateRotationWallet(wallet);
+  }
 
   return wallet;
 }

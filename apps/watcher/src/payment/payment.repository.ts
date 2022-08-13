@@ -33,6 +33,8 @@ export enum PaymentStatus {
 export interface IPayment {
   id: string;
   amount: Big;
+  currency: string;
+  paid: Big;
   address: string;
   status: PaymentStatus;
   expiration: Date;
@@ -54,8 +56,10 @@ export function createNewPayment(data: { wallet: IRotationWallet }) {
   const createPayment: IPayment = {
     id: nanoid(),
     amount: Big(getPaymentValue()),
+    currency: "ETH",
     address: data.wallet.address,
     status: PaymentStatus.initalized,
+    paid: Big(0),
     expiration: new Date(Date.now() + ms("30m")),
   };
 
@@ -76,4 +80,10 @@ export function updatePaymentStatus(payment: IPayment, status: PaymentStatus) {
 
 export function findPaymentsWithStatus(status: PaymentStatus) {
   return PaymentState.filter((payment) => payment.status === status);
+}
+
+export function updatePaymentPaid(payment: IPayment, paid: Big) {
+  payment.paid = paid;
+  updatePayment(payment);
+  return payment;
 }
