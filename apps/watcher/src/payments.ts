@@ -1,14 +1,15 @@
 import { Big } from "big.js";
 import { nanoid } from "nanoid";
-import { DomesticEvent, KnownEvents } from "./event";
+import { DomesticEvent, KnownEvents } from "./infra/event";
 import { randmizePaymentValue } from "./randomizer";
-import {
-  getRotationWalletByAddress,
-  updateConfirmedRotationWalletBalance,
-  useRotationWallet,
-} from "./wallets";
+import { getRotationWalletByAddress, useRotationWallet } from "./wallets";
 import schedule from "node-schedule";
 import ms from "ms";
+import {
+  getOrGenerateFreeRotationWallet,
+  updateConfirmedRotationWalletBalance,
+} from "./rotation-wallet/rotation-wallet.service";
+import { Wallet } from "ethers";
 
 export enum PaymentStatus {
   /** Default transaction status once they are created in system. */
@@ -47,7 +48,7 @@ export interface IPayment {
 const PaymentState: IPayment[] = [];
 
 export async function initalizePayment() {
-  const availableRotationWallet = await useRotationWallet();
+  const availableRotationWallet = getOrGenerateFreeRotationWallet();
 
   const payment: IPayment = {
     id: nanoid(),
@@ -83,6 +84,8 @@ export async function checkPaymentsJob() {
 
     updateConfirmedRotationWalletBalance(rotationWallet);
 
+    console.log(rotationWallet.balance.toString());
+
     if (rotationWallet.balance.gte(payment.amount)) {
       payment.status = PaymentStatus.confirmed;
       new DomesticEvent(KnownEvents.paymentConfirmed, payment);
@@ -96,6 +99,6 @@ export async function checkPaymentsJob() {
 }
 
 /** @deprecated Function should not be used in real-world enviroment, it will consume a lot of assets from RPC connection. */
-export async function startBackgroundCheckerService() {
-  return schedule.scheduleJob("* * * * * *", checkPaymentsJob);
+export function startBackgroundCheckerService() {
+  return;
 }

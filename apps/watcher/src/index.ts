@@ -1,9 +1,4 @@
-import { subscribeToEthereumTransactions } from "./blockchain.js";
-import { initalizePayment, startBackgroundCheckerService } from "./payments.js";
-import {
-  useRotationWallet,
-  watchForRotationWalletBalanceUpdate,
-} from "./wallets.js";
+import { initalizeNewPayment, watchPayment } from "./payment/payment.service";
 
-startBackgroundCheckerService();
-await initalizePayment();
+const payment = await initalizeNewPayment();
+await watchPayment(payment);

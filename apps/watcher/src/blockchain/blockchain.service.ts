@@ -1,4 +1,5 @@
 import Big from "big.js";
+import { ethers } from "ethers";
 import Web3 from "web3";
 import {
   RPC_PROVIDER_URL,
@@ -15,15 +16,31 @@ export interface IGenericTransaction {
   balance: Big;
 }
 
-export class BlockchainService {
-  ws: Web3;
-  rpc: Web3;
+export const rpc = new Web3(new Web3.providers.HttpProvider(RPC_PROVIDER_URL));
 
-  constructor(
-    rpcProviderUrl: string = RPC_PROVIDER_URL,
-    wsProviderUrl: string = WEBSOCKET_PROVIDER_URL
-  ) {
-    this.rpc = new Web3(new Web3.providers.HttpProvider(rpcProviderUrl));
-    this.ws = new Web3(new Web3.providers.WebsocketProvider(wsProviderUrl));
-  }
+export const ws = new Web3(
+  new Web3.providers.WebsocketProvider(WEBSOCKET_PROVIDER_URL)
+);
+
+export function createWallet() {
+  const newAccount = rpc.eth.accounts.create();
+  return newAccount;
+}
+
+export async function getTransactionConfirmations(transactionHash: string) {
+  const transaction = await rpc.eth.getTransaction(transactionHash);
+
+  const currentBlock = await rpc.eth.getBlockNumber();
+
+  return transaction.blockNumber === null
+    ? 0
+    : currentBlock - transaction.blockNumber;
+}
+
+export async function getBalanceOfAddress(address: string) {
+  let balance = await rpc.eth.getBalance(address);
+
+  balance = ethers.utils.formatUnits(balance, 18).toString();
+
+  return new Big(balance);
 }

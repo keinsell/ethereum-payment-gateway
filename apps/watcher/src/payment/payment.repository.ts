@@ -1,4 +1,8 @@
 import Big from "big.js";
+import ms from "ms";
+import { nanoid } from "nanoid";
+import random from "random-js";
+import { IRotationWallet } from "../rotation-wallet/rotation-wallet.repository";
 
 export enum PaymentStatus {
   /** Default transaction status once they are created in system. */
@@ -36,4 +40,40 @@ export interface IPayment {
 
 const PaymentState: IPayment[] = [];
 
-export interface PaymentRepository {}
+export function getPaymentValue() {
+  // create a Mersenne Twister-19937 that is auto-seeded based on time and other random values
+  const engine = random.MersenneTwister19937.autoSeed();
+  // create a distribution that will consistently produce integers within inclusive range [0, 99].
+  const distribution = random.integer(1, 100_000_000);
+  // generate a number that is guaranteed to be within [0, 99] without any particular bias.
+
+  return distribution(engine) / 1_000_000_000;
+}
+
+export function createNewPayment(data: { wallet: IRotationWallet }) {
+  const createPayment: IPayment = {
+    id: nanoid(),
+    amount: Big(getPaymentValue()),
+    address: data.wallet.address,
+    status: PaymentStatus.initalized,
+    expiration: new Date(Date.now() + ms("30m")),
+  };
+
+  PaymentState.push(createPayment);
+
+  return createPayment;
+}
+
+export function updatePayment(payment: IPayment) {
+  PaymentState.splice(PaymentState.indexOf(payment), 1, payment);
+}
+
+export function updatePaymentStatus(payment: IPayment, status: PaymentStatus) {
+  payment.status = status;
+  updatePayment(payment);
+  return payment;
+}
+
+export function findPaymentsWithStatus(status: PaymentStatus) {
+  return PaymentState.filter((payment) => payment.status === status);
+}
