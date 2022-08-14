@@ -1,6 +1,8 @@
 import Big from "big.js";
 import { scheduleJob } from "node-schedule";
 import { DomesticEvent, eventStorage, KnownEvents } from "../infra/event";
+import { PurchaseInitalizedEvent } from "../purchase/events/purchase-initalized.event";
+import { PurchaseStartedWaitingForPayment } from "../purchase/events/purchase-started-watch-for-payment.event";
 import { getConfirmedBalanceOnRotationWalletToDate } from "../rotation-history/rotation-hisory.repository";
 import {
   findRotationWalletByAddress,
@@ -21,7 +23,7 @@ export async function initalizeNewPayment() {
 
   const payment = createNewPayment({ wallet: availableRotationWallet });
 
-  new DomesticEvent(KnownEvents.paymentInitalized, payment);
+  new PurchaseInitalizedEvent(payment);
 
   return payment;
 }
@@ -29,7 +31,7 @@ export async function initalizeNewPayment() {
 export async function watchPayment(payment: IPayment) {
   payment = updatePaymentStatus(payment, PaymentStatus.waitingForPayment);
 
-  new DomesticEvent(KnownEvents.paymentWaitingForPayment, payment);
+  new PurchaseStartedWaitingForPayment(payment);
 }
 
 function validatePaid(payment: IPayment) {

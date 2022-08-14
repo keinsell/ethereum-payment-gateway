@@ -1,6 +1,5 @@
 import Big from "big.js";
 import { Dinero } from "dinero.js";
-import { Entity } from "../../infra/entity";
 import { PurchaseCurrency } from "./purchase-currency.enum";
 import { PurchaseStatus } from "./purchase-status.enum";
 

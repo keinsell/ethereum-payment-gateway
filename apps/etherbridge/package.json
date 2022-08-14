@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "test": "c8 ava",
-    "ganache": "ganache -b 0 -a 5 -m 'memory syrup era this tiny rich notice tenant door punch gasp want' --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0"
+    "ganache": "ganache -b 10 -a 5 -m 'memory syrup era this tiny rich notice tenant door punch gasp want' --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0"
   },
   "volta": {
     "node": "16.16.0"
@@ -16,6 +16,7 @@
     "@truffle/hdwallet-provider": "^2.0.13",
     "big.js": "^6.2.1",
     "chalk": "^5.0.1",
+    "consola": "^2.15.3",
     "dinero.js": "^1.9.1",
     "ethers": "^5.6.9",
     "ms": "^2.1.3",
