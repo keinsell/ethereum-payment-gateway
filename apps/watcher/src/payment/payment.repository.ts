@@ -38,6 +38,7 @@ export interface IPayment {
   address: string;
   status: PaymentStatus;
   expiration: Date;
+  creation: Date;
 }
 
 const PaymentState: IPayment[] = [];
@@ -46,10 +47,11 @@ export function getPaymentValue() {
   // create a Mersenne Twister-19937 that is auto-seeded based on time and other random values
   const engine = random.MersenneTwister19937.autoSeed();
   // create a distribution that will consistently produce integers within inclusive range [0, 99].
-  const distribution = random.integer(1, 100_000_000);
+  // const distribution = random.integer(1, 100_000_000);
+  const distribution = random.integer(1, 3);
   // generate a number that is guaranteed to be within [0, 99] without any particular bias.
 
-  return distribution(engine) / 1_000_000_000;
+  return distribution(engine); // / 1_000_000_000;
 }
 
 export function createNewPayment(data: { wallet: IRotationWallet }) {
@@ -60,7 +62,8 @@ export function createNewPayment(data: { wallet: IRotationWallet }) {
     address: data.wallet.address,
     status: PaymentStatus.initalized,
     paid: Big(0),
-    expiration: new Date(Date.now() + ms("30m")),
+    expiration: new Date(Date.now() + ms("1s")),
+    creation: new Date(),
   };
 
   PaymentState.push(createPayment);

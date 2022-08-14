@@ -8,6 +8,7 @@ export enum KnownEvents {
   paymentConfirmed = "paymentConfirmed",
   paymentRefunded = "paymentRefunded",
   paymentCompleted = "paymentCompleted",
+  paymentExpired = "paymentExpired",
   unconfirmedBalanceChange = "unconfirmedBalanceChange",
 }
 

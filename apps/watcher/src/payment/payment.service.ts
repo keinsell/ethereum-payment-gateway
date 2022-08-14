@@ -1,6 +1,10 @@
 import { scheduleJob } from "node-schedule";
 import { DomesticEvent, KnownEvents } from "../infra/event";
-import { findRotationWalletByAddress } from "../rotation-wallet/rotation-wallet.repository";
+import { getBalanceDifferenceSince } from "../rotation-history/rotation-hisory.repository";
+import {
+  findRotationWalletByAddress,
+  releaseRotationWallet,
+} from "../rotation-wallet/rotation-wallet.repository";
 import {
   getOrGenerateFreeRotationWallet,
   updateConfirmedRotationWalletBalance,
@@ -32,7 +36,15 @@ export async function watchPayment(payment: IPayment) {
 function validatePaid(payment: IPayment) {
   if (payment.paid.eq(payment.amount)) {
     payment.status = PaymentStatus.confirmed;
+
     new DomesticEvent(KnownEvents.paymentConfirmed, payment);
+
+    const rotationWallet = findRotationWalletByAddress(payment.address);
+
+    if (rotationWallet) {
+      releaseRotationWallet(rotationWallet);
+    }
+
     return true;
   }
   return false;
@@ -56,6 +68,15 @@ function validateUnderpaid(payment: IPayment) {
   return false;
 }
 
+function validateExpired(payment: IPayment) {
+  if (payment.expiration.getTime() < new Date().getTime()) {
+    payment.status = PaymentStatus.expired;
+    new DomesticEvent(KnownEvents.paymentExpired, payment);
+    return true;
+  }
+  return false;
+}
+
 export async function performPaymentCheck(payment: IPayment) {
   const rotationWallet = findRotationWalletByAddress(payment.address);
 
@@ -63,15 +84,16 @@ export async function performPaymentCheck(payment: IPayment) {
     return;
   }
 
-  const updatedWalletBalance = await updateConfirmedRotationWalletBalance(
-    rotationWallet
-  );
+  updateConfirmedRotationWalletBalance(rotationWallet);
 
-  payment.paid = updatedWalletBalance.balance;
+  const difference = getBalanceDifferenceSince(payment.creation);
+
+  payment.paid = difference;
 
   validatePaid(payment);
   validateOverpaid(payment);
   validateUnderpaid(payment);
+  validateExpired(payment);
 
   if (payment.status === PaymentStatus.confirmed) {
     payment.status = PaymentStatus.completed;
