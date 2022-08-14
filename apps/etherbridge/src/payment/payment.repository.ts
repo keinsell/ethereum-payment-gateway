@@ -13,7 +13,8 @@ import { IRotationWallet } from "../rotation-wallet/rotation-wallet.repository";
  * 4. {@link PaymentStatus.paymentRecived **PAYMENT_RECIVED**}, payment declaration confirmed deposit on rotation wallet. This can result in other status when conditions for **PAYMENT_RECIVED** will be not satified. For example: if end-customer will pay more than declared amount there we'll apply {@link PaymentStatus.overpaid **OVERPAID**} status.
  * 5. {@link PaymentStatus.overpaid **OVERPAID**} & {@link PaymentStatus.underpaid **UNDERPAID**} situational statuses which will be applied when user will mistake amount sent to payment declaration. System will automatically try to resolve such issues, in case of **UNDERPAID** system will wait for additional payment from end-customer and if such will be not met until expiration time, transaction will be **REFUNDED**. If **OVERPAID** system will refund additional payment to end-customer by provided refund address, to reduce transaction size to previously set.
  * 6. {@link PaymentStatus.delivery **DELIVERY**}, payment declaration is performing deliver to end-customer.
- * 7. {@link PaymentStatus.completed **COMPLETED**}, {@link PaymentStatus.refunded **REFUNDED**} and {@link PaymentStatus.expired **EXPIRED**}. Several statues that end payment delclaration just for different reasons.
+ * 7. {@link PaymentStatus.refundPending **REFUND_PENDING**}, {@link PaymentStatus.missingRefundAdress **MISSING_REFUND_ADDRESS**} are situational statuses of previously defined statuses, in cases where we aren't really able to perform refund for made transactions.
+ * 8. {@link PaymentStatus.completed **COMPLETED**}, {@link PaymentStatus.refunded **REFUNDED**} and {@link PaymentStatus.expired **EXPIRED**}. Several statues that end payment delclaration just for different reasons.
  */
 export enum PaymentStatus {
   /** Default transaction status once they are created in system. */
