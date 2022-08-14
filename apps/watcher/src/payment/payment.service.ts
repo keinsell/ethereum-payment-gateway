@@ -1,6 +1,5 @@
 import { scheduleJob } from "node-schedule";
 import { DomesticEvent, KnownEvents } from "../infra/event";
-import { getBalanceDifferenceSince } from "../rotation-history/rotation-hisory.repository";
 import {
   findRotationWalletByAddress,
   releaseRotationWallet,
@@ -97,7 +96,7 @@ export async function performPaymentCheck(payment: IPayment) {
 
   updateConfirmedRotationWalletBalance(rotationWallet);
 
-  const difference = getBalanceDifferenceSince(payment.creation);
+  const difference = rotationWallet.balance;
 
   payment.paid = difference;
 
