@@ -12,7 +12,7 @@ import {
   accountBalanceChangeOnRotationWallet,
   confirmBalanceChangesAfterBlock,
 } from "../rotation-history/rotation-hisory.repository";
-import { FoundPendingTransactionEvent } from "./events/pendingTransactionFound.event";
+import { FoundPendingTransactionEvent } from "./events/pending-transaction-found.event";
 import {
   createRotationWalletFromAccount,
   findAvailableRotationWallet,

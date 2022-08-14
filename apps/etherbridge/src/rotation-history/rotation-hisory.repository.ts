@@ -1,7 +1,7 @@
 import Big from "big.js";
 import { nanoid } from "nanoid";
 import { DomesticEvent } from "../infra/event";
-import { ConfirmedPendingTransactionEvent } from "../rotation-wallet/events/confirmedPendingTransaction.event";
+import { ConfirmedPendingTransactionEvent } from "../rotation-wallet/events/confirmed-pending-transaction.event";
 import {
   IRotationWallet,
   updateRotationWallet,
