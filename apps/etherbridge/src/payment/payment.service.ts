@@ -3,6 +3,7 @@ import { scheduleJob } from "node-schedule";
 import { DomesticEvent, eventStorage, KnownEvents } from "../infra/event";
 import { PurchaseInitalizedEvent } from "../purchase/events/purchase-initalized.event";
 import { PurchaseStartedWaitingForPayment } from "../purchase/events/purchase-started-watch-for-payment.event";
+import { PurchaseUnderpaidEvent } from "../purchase/events/purchase-underpaid.event";
 import { getConfirmedBalanceOnRotationWalletToDate } from "../rotation-history/rotation-hisory.repository";
 import {
   findRotationWalletByAddress,
@@ -38,6 +39,8 @@ function validatePaid(payment: IPayment) {
   if (payment.paid.eq(payment.amount)) {
     payment.status = PaymentStatus.confirmed;
 
+    // Additional validation of wallet balance by rpc call.
+
     new DomesticEvent(KnownEvents.paymentConfirmed, payment);
 
     const rotationWallet = findRotationWalletByAddress(payment.address);
@@ -67,7 +70,7 @@ function validateOverpaid(payment: IPayment) {
 function validateUnderpaid(payment: IPayment) {
   if (payment.paid.lt(payment.amount) && payment.paid.gt(0)) {
     if (payment.status !== PaymentStatus.underpaid) {
-      new DomesticEvent(KnownEvents.paymentUnderpaid, payment);
+      new PurchaseUnderpaidEvent(payment);
     }
 
     payment.status = PaymentStatus.underpaid;
