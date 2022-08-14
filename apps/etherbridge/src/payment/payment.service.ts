@@ -151,8 +151,8 @@ scheduleJob("* * * * * *", async () => {
   for await (const payment of payments) {
     console.log(`You bought liternally nothing by paying for ${payment.id}`);
 
-    await payoutForWalletWithBiggestCapial();
-
     markPaymentAsSuccess(payment);
+
+    await payoutForWalletWithBiggestCapial();
   }
 });

@@ -16,6 +16,7 @@ import {
   accountBalanceChangeOnRotationWallet,
   confirmBalanceChangesAfterBlock,
 } from "../rotation-history/rotation-hisory.repository";
+import { toWei } from "../utilities/decimals.util";
 import { FoundPendingTransactionEvent } from "./events/pending-transaction-found.event";
 import {
   createRotationWalletFromAccount,
@@ -108,9 +109,10 @@ export async function payoutForWalletWithBiggestCapial() {
   console.log(esimateFee);
 
   let reducedBalance = balance.minus(esimateFee.total).toString();
-  reducedBalance = ethers.utils
-    .parseEther(reducedBalance.toString())
-    .toString();
+
+  reducedBalance = toWei(reducedBalance).toString();
+
+  console.log(reducedBalance);
 
   const signedTransaction = await signTransaction(
     {
@@ -123,9 +125,14 @@ export async function payoutForWalletWithBiggestCapial() {
     rotationWallet.privateKey
   );
 
+  console.log(signedTransaction);
+
   if (signedTransaction.rawTransaction) {
-    await sendSignedTransaction(signedTransaction.rawTransaction);
+    const tx = await sendSignedTransaction(signedTransaction.rawTransaction);
+    console.log(tx);
   }
+
+  return;
 }
 
 export async function transactionConfirmationListener() {
