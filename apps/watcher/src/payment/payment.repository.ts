@@ -62,7 +62,7 @@ export function createNewPayment(data: { wallet: IRotationWallet }) {
     address: data.wallet.address,
     status: PaymentStatus.initalized,
     paid: Big(0),
-    expiration: new Date(Date.now() + ms("1s")),
+    expiration: new Date(Date.now() + ms("5m")),
     creation: new Date(),
   };
 

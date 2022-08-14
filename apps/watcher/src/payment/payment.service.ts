@@ -51,9 +51,13 @@ function validatePaid(payment: IPayment) {
 }
 
 function validateOverpaid(payment: IPayment) {
-  if (payment.paid.gte(payment.amount)) {
+  if (payment.paid.gt(payment.amount)) {
     payment.status = PaymentStatus.overpaid;
+
     new DomesticEvent(KnownEvents.paymentOverpaid, payment);
+
+    // TODO: Refund additional payment to sender
+
     return true;
   }
   return false;
@@ -61,10 +65,15 @@ function validateOverpaid(payment: IPayment) {
 
 function validateUnderpaid(payment: IPayment) {
   if (payment.paid.lt(payment.amount) && payment.paid.gt(0)) {
+    if (payment.status !== PaymentStatus.underpaid) {
+      new DomesticEvent(KnownEvents.paymentUnderpaid, payment);
+    }
+
     payment.status = PaymentStatus.underpaid;
-    new DomesticEvent(KnownEvents.paymentUnderpaid, payment);
+
     return true;
   }
+
   return false;
 }
 
@@ -90,10 +99,11 @@ export async function performPaymentCheck(payment: IPayment) {
 
   payment.paid = difference;
 
+  validateExpired(payment);
+
   validatePaid(payment);
   validateOverpaid(payment);
   validateUnderpaid(payment);
-  validateExpired(payment);
 
   if (payment.status === PaymentStatus.confirmed) {
     payment.status = PaymentStatus.completed;
@@ -103,6 +113,8 @@ export async function performPaymentCheck(payment: IPayment) {
 
 scheduleJob("* * * * * *", async () => {
   let payments = findPaymentsWithStatus(PaymentStatus.waitingForPayment);
+
+  payments = [...payments, ...findPaymentsWithStatus(PaymentStatus.underpaid)];
 
   for await (const payment of payments) {
     await performPaymentCheck(payment);
