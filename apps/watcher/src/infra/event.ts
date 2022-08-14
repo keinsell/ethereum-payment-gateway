@@ -10,6 +10,7 @@ export enum KnownEvents {
   paymentCompleted = "paymentCompleted",
   paymentExpired = "paymentExpired",
   unconfirmedBalanceChange = "unconfirmedBalanceChange",
+  confirmedBalanceChange = "confirmedBalanceChange",
 }
 
 export interface IDomesticEvent {

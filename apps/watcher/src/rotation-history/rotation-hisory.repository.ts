@@ -1,7 +1,13 @@
 import Big from "big.js";
-import { IRotationWallet } from "../rotation-wallet/rotation-wallet.repository";
+import { nanoid } from "nanoid";
+import { DomesticEvent } from "../infra/event";
+import {
+  IRotationWallet,
+  updateRotationWallet,
+} from "../rotation-wallet/rotation-wallet.repository";
 
 interface RotationWalletHistory {
+  id: string;
   timestamp: Date;
   transactionHash?: string;
   blockNumber?: number;
@@ -24,17 +30,41 @@ export function getRotationWalletBalanceSinceDate(
   return balance[0]?.balance;
 }
 
-export function getRotationWalletBalanceToDate(
+export function getLatestConfirmedBalanceOnRotationWallet(
+  wallet: IRotationWallet
+) {
+  const balance = RotationWalletHistory.filter(
+    (history) => history.isConfirmed && history.wallet.id === wallet.id
+  );
+
+  return balance[0]?.balance;
+}
+
+export function getLatestUnconfirmedBalanceOnRotationWallet(
+  wallet: IRotationWallet
+) {
+  const balance = RotationWalletHistory.filter(
+    (history) => !history.isConfirmed && history.wallet.id === wallet.id
+  );
+
+  return balance[0]?.balance;
+}
+
+export function getConfirmedBalanceOnRotationWalletToDate(
   wallet: IRotationWallet,
   date: Date
 ) {
   const balance = RotationWalletHistory.filter(
-    (history) => history.wallet === wallet && history.timestamp < date
+    (history) =>
+      history.isConfirmed &&
+      history.timestamp.getTime() > date.getTime() &&
+      history.wallet.id === wallet.id
   );
 
-  return balance.reduce((acc, curr) => acc.plus(curr.balance), Big(0));
+  return balance[0]?.balance;
 }
 
+/** Note a change of balance on rotation wallet. */
 export function accountBalanceChangeOnRotationWallet(
   wallet: IRotationWallet,
   difference?: Big,
@@ -48,6 +78,7 @@ export function accountBalanceChangeOnRotationWallet(
   const balance = difference ? wallet.balance.plus(difference) : wallet.balance;
 
   const history: RotationWalletHistory = {
+    id: nanoid(128),
     timestamp: new Date(),
     balance: balance,
     wallet,
@@ -56,18 +87,32 @@ export function accountBalanceChangeOnRotationWallet(
 
   RotationWalletHistory.push(history);
 
-  console.log(RotationWalletHistory);
-
   return history;
 }
 
 export function confirmBalanceChangesAfterBlock(block: number) {
-  const balance = RotationWalletHistory.filter(
-    (history) =>
-      history.blockNumber ?? (0 < block && history.isConfirmed === false)
-  );
+  const balance = RotationWalletHistory.filter((history) => {
+    if (!history.blockNumber) {
+      return true;
+    }
+    return history.blockNumber < block && history.isConfirmed === false;
+  });
 
   balance.forEach((history) => {
     history.isConfirmed = true;
+
+    const index = RotationWalletHistory.findIndex(
+      (history) => history.id === history.id
+    );
+
+    const wallet = history.wallet;
+
+    wallet.balance = history.balance;
+
+    updateRotationWallet(wallet);
+
+    new DomesticEvent("confirmedBalanceChanged", RotationWalletHistory[index]);
+
+    RotationWalletHistory[index] = history;
   });
 }

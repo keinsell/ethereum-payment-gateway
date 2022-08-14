@@ -49,7 +49,7 @@ export async function updateConfirmedRotationWalletBalance(
 
     wallet.balance = balance;
 
-    accountBalanceChangeOnRotationWallet(wallet, difference);
+    accountBalanceChangeOnRotationWallet(wallet);
 
     updateRotationWallet(wallet);
   }
@@ -76,6 +76,11 @@ export async function pendingTransactionListener() {
           blockNumber: transaction.blockNumber ?? undefined,
           transactionHash: transaction.hash,
           isConfirmed: false,
+        });
+
+        new DomesticEvent("pendingTransaction", {
+          wallet: wallet,
+          transaction,
         });
       }
     }

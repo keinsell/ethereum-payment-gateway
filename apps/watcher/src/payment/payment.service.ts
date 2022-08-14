@@ -1,5 +1,7 @@
+import Big from "big.js";
 import { scheduleJob } from "node-schedule";
 import { DomesticEvent, KnownEvents } from "../infra/event";
+import { getConfirmedBalanceOnRotationWalletToDate } from "../rotation-history/rotation-hisory.repository";
 import {
   findRotationWalletByAddress,
   releaseRotationWallet,
@@ -94,9 +96,11 @@ export async function performPaymentCheck(payment: IPayment) {
     return;
   }
 
-  updateConfirmedRotationWalletBalance(rotationWallet);
-
-  const difference = rotationWallet.balance;
+  const difference =
+    getConfirmedBalanceOnRotationWalletToDate(
+      rotationWallet,
+      payment.creation
+    ) ?? new Big(0);
 
   payment.paid = difference;
 
@@ -104,14 +108,16 @@ export async function performPaymentCheck(payment: IPayment) {
 
   validateUnconfirmedPayment(payment);
 
-  validatePaid(payment);
-  validateOverpaid(payment);
-  validateUnderpaid(payment);
+  const isPaid = validatePaid(payment);
+  const isOverpaid = validateOverpaid(payment);
+  const isUnderpaid = validateUnderpaid(payment);
 
   if (payment.status === PaymentStatus.confirmed) {
     payment.status = PaymentStatus.completed;
     new DomesticEvent(KnownEvents.paymentCompleted, payment);
   }
+
+  releaseRotationWallet(rotationWallet);
 }
 
 scheduleJob("* * * * * *", async () => {
