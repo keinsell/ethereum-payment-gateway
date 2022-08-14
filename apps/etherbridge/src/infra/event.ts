@@ -31,11 +31,15 @@ export class DomesticEvent implements IDomesticEvent {
     this.timestamp = new Date();
     this.data = data;
     this.toConsole();
-    eventStorage.push(this);
+    this.storeInEventStorage();
   }
 
   toConsole() {
     console.info(`[${this.timestamp.toISOString()}] ${this.eventName}`);
     console.debug(this.data);
+  }
+
+  private storeInEventStorage() {
+    eventStorage.push(this);
   }
 }
