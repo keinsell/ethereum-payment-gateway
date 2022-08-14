@@ -1,20 +1,18 @@
 import Big from "big.js";
 import { scheduleJob } from "node-schedule";
-import { DomesticEvent, KnownEvents } from "../infra/event";
+import { DomesticEvent, eventStorage, KnownEvents } from "../infra/event";
 import { getConfirmedBalanceOnRotationWalletToDate } from "../rotation-history/rotation-hisory.repository";
 import {
   findRotationWalletByAddress,
   releaseRotationWallet,
 } from "../rotation-wallet/rotation-wallet.repository";
-import {
-  getOrGenerateFreeRotationWallet,
-  updateConfirmedRotationWalletBalance,
-} from "../rotation-wallet/rotation-wallet.service";
+import { getOrGenerateFreeRotationWallet } from "../rotation-wallet/rotation-wallet.service";
 import {
   createNewPayment,
   findPaymentsWithStatus,
   IPayment,
   PaymentStatus,
+  updatePayment,
   updatePaymentStatus,
 } from "./payment.repository";
 
@@ -87,6 +85,12 @@ function validateExpired(payment: IPayment) {
   return false;
 }
 
+function markPaymentAsSuccess(payment: IPayment) {
+  payment.status = PaymentStatus.completed;
+  updatePayment(payment);
+  new DomesticEvent(KnownEvents.paymentCompleted, payment);
+}
+
 function validateUnconfirmedPayment(payment: IPayment) {}
 
 export async function performPaymentCheck(payment: IPayment) {
@@ -113,8 +117,9 @@ export async function performPaymentCheck(payment: IPayment) {
   const isUnderpaid = validateUnderpaid(payment);
 
   if (payment.status === PaymentStatus.confirmed) {
-    payment.status = PaymentStatus.completed;
-    new DomesticEvent(KnownEvents.paymentCompleted, payment);
+    payment.status = PaymentStatus.delivery;
+
+    new DomesticEvent(KnownEvents.paymentPaymentRecived, payment);
   }
 
   releaseRotationWallet(rotationWallet);
@@ -127,5 +132,15 @@ scheduleJob("* * * * * *", async () => {
 
   for await (const payment of payments) {
     await performPaymentCheck(payment);
+  }
+});
+
+scheduleJob("* * * * * *", async () => {
+  let payments = findPaymentsWithStatus(PaymentStatus.delivery);
+
+  for await (const payment of payments) {
+    console.log(`You bought liternally nothing by paying for ${payment.id}`);
+
+    markPaymentAsSuccess(payment);
   }
 });
