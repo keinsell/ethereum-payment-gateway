@@ -2,13 +2,18 @@ import chalk from "chalk";
 
 export namespace ConsoleStyle {
   export function identifier(identifier: string) {
-    return `${chalk.yellow(identifier)}`;
+    return `${chalk.gray(identifier)}`;
   }
   export function amountWithCurrency(amount: string, currency: string) {
-    return `${chalk.gray(amount)} ${chalk.gray(currency)}`;
+    return `${chalk.yellowBright(amount)} ${chalk.yellowBright(currency)}`;
   }
 
   export function depoistAddress(address: string) {
-    return `${chalk.gray(address)}`;
+    return `${chalk.yellowBright(address)}`;
+  }
+
+  export function separator() {
+    const separate = "-".repeat(60);
+    return `${chalk.black(separate)}`;
   }
 }
