@@ -38,7 +38,6 @@ export enum PaymentStatus {
   refunded = "REFUNDED",
   expired = "EXPIRED",
   completed = "COMPLETED",
-  completedWithRefund = "COMPLETED_WITH_REFUND",
 }
 
 export interface IPayment {
