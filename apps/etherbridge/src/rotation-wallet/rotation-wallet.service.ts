@@ -16,8 +16,10 @@ import {
   accountBalanceChangeOnRotationWallet,
   confirmBalanceChangesAfterBlock,
 } from "../rotation-history/rotation-hisory.repository";
-import { toWei } from "../utilities/decimals.util";
+import { toBig, toWei, toWeiFromEther } from "../utilities/decimals.util";
+import { FundsWithdrawn } from "./events/funds-withdrawed.event";
 import { FoundPendingTransactionEvent } from "./events/pending-transaction-found.event";
+import { TransactionPostedEvent } from "./events/transaction-posted.event";
 import {
   createRotationWalletFromAccount,
   findAvailableRotationWallet,
@@ -91,6 +93,42 @@ export async function pendingTransactionListener() {
   });
 }
 
+export async function withdrawFromRotationWallet(
+  rotationWallet: IRotationWallet,
+  destination: string
+) {
+  let balance = toWeiFromEther(rotationWallet.balance);
+
+  const esimateFee = await estimateFeeForTransaction({
+    to: "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",
+    value: balance,
+  });
+
+  balance = toBig(balance)
+    .minus(toWeiFromEther(esimateFee.total))
+    .toString();
+
+  const signedTransaction = await signTransaction(
+    {
+      to: destination,
+      value: balance,
+      gas: esimateFee.gasLimit,
+      gasPrice: esimateFee.gasPrice,
+    },
+    rotationWallet.privateKey
+  );
+
+  if (!signedTransaction) {
+    return undefined;
+  }
+
+  const transaction = await sendSignedTransaction(signedTransaction);
+
+  updateConfirmedRotationWalletBalance(rotationWallet);
+
+  new FundsWithdrawn(transaction.hash, rotationWallet, transaction);
+}
+
 export async function massPayoutFromRotationWalletsToAddress(address: string) {}
 
 export async function payoutForWalletWithBiggestCapial() {
@@ -99,38 +137,10 @@ export async function payoutForWalletWithBiggestCapial() {
 
   if (!rotationWallet) return null;
 
-  const balance = await getBalanceOfAddress(rotationWallet.address);
-
-  const esimateFee = await estimateFeeForTransaction({
-    to: "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",
-    value: balance.toString(),
-  });
-
-  console.log(esimateFee);
-
-  let reducedBalance = balance.minus(esimateFee.total).toString();
-
-  reducedBalance = toWei(reducedBalance).toString();
-
-  console.log(reducedBalance);
-
-  const signedTransaction = await signTransaction(
-    {
-      to: "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",
-      value: reducedBalance,
-      gas: esimateFee.gasLimit,
-      gasPrice: esimateFee.gasPrice,
-      nonce: await getNonce(rotationWallet.address),
-    },
-    rotationWallet.privateKey
+  await withdrawFromRotationWallet(
+    rotationWallet,
+    "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0"
   );
-
-  console.log(signedTransaction);
-
-  if (signedTransaction.rawTransaction) {
-    const tx = await sendSignedTransaction(signedTransaction.rawTransaction);
-    console.log(tx);
-  }
 
   return;
 }

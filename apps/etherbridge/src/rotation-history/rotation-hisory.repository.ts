@@ -96,10 +96,14 @@ export function confirmBalanceChangesAfterBlock(block: number) {
     if (!history.blockNumber) {
       return true;
     }
-    return history.blockNumber < block && history.isConfirmed === false;
+    return history.blockNumber < block && !history.isConfirmed;
   });
 
   balance.forEach((history) => {
+    if (history.isConfirmed) {
+      return;
+    }
+
     history.isConfirmed = true;
 
     const index = RotationWalletHistory.findIndex(

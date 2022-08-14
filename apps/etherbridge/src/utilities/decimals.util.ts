@@ -1,10 +1,19 @@
 import Big from "big.js";
 import { ethers } from "ethers";
 
-export function toBig(
-  value: number | string | ethers.BigNumber | ethers.BigNumberish
-): Big {
+export type InternalBigNuberish =
+  | number
+  | string
+  | ethers.BigNumber
+  | ethers.BigNumberish
+  | Big;
+
+export function toBig(value: InternalBigNuberish): Big {
   return new Big(value.toString());
+}
+
+export function toWeiFromEther(value: InternalBigNuberish): string {
+  return ethers.utils.parseEther(value.toString()).toString();
 }
 
 export function toWei(

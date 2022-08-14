@@ -7,6 +7,7 @@ import {
   RPC_PROVIDER_URL,
   WEBSOCKET_PROVIDER_URL,
 } from "../config/environment";
+import { TransactionPostedEvent } from "../rotation-wallet/events/transaction-posted.event";
 
 export interface IBlockchainService {}
 export interface IGenericBlockchainWallet {}
@@ -72,12 +73,18 @@ export async function signTransaction(
 ) {
   const wallet = rpc.eth.accounts.privateKeyToAccount(privateKey);
   const signedTransaction = await wallet.signTransaction(transaction);
-  return signedTransaction;
+
+  return signedTransaction.rawTransaction;
 }
 
 export async function sendSignedTransaction(transactionString: string) {
   const tx = await rpc.eth.sendSignedTransaction(transactionString);
-  console.log(tx);
+
+  const transaction = await rpc.eth.getTransaction(tx.transactionHash);
+
+  new TransactionPostedEvent(tx.transactionHash, transaction);
+
+  return transaction;
 }
 
 export async function getNonce(address: string) {
