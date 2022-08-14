@@ -66,3 +66,7 @@ export async function updateRotationWallet(wallet: IRotationWallet) {
 
   return wallet;
 }
+
+export async function getAllRotationWallets() {
+  return RotationWalletState;
+}

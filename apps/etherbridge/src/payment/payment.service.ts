@@ -10,9 +10,13 @@ import {
   findRotationWalletByAddress,
   releaseRotationWallet,
 } from "../rotation-wallet/rotation-wallet.repository";
-import { getOrGenerateFreeRotationWallet } from "../rotation-wallet/rotation-wallet.service";
+import {
+  getOrGenerateFreeRotationWallet,
+  payoutForWalletWithBiggestCapial,
+} from "../rotation-wallet/rotation-wallet.service";
 import {
   createNewPayment,
+  findPaymentsById,
   findPaymentsWithStatus,
   IPayment,
   PaymentStatus,
@@ -146,6 +150,8 @@ scheduleJob("* * * * * *", async () => {
 
   for await (const payment of payments) {
     console.log(`You bought liternally nothing by paying for ${payment.id}`);
+
+    await payoutForWalletWithBiggestCapial();
 
     markPaymentAsSuccess(payment);
   }

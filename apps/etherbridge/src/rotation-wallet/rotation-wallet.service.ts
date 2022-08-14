@@ -2,8 +2,11 @@ import Big from "big.js";
 import { ethers } from "ethers";
 import {
   createWallet,
+  estimateFeeForTransaction,
   getBalanceOfAddress,
   getTransactionByHash,
+  sendSignedTransaction,
+  signAndSendTransaction,
   steamActualBlock,
   streamPendingTransactions,
 } from "../blockchain/blockchain.service";
@@ -17,6 +20,7 @@ import {
   createRotationWalletFromAccount,
   findAvailableRotationWallet,
   findRotationWalletByAddress,
+  getAllRotationWallets,
   IRotationWallet,
   markRotationWalletAsBusy,
   updateRotationWallet,
@@ -83,6 +87,35 @@ export async function pendingTransactionListener() {
       }
     }
   });
+}
+
+export async function massPayoutFromRotationWalletsToAddress(address: string) {}
+
+export async function payoutForWalletWithBiggestCapial() {
+  const rotationWallets = await getAllRotationWallets();
+  const rotationWallet = rotationWallets[0];
+
+  if (!rotationWallet) return null;
+
+  const balance = await getBalanceOfAddress(rotationWallet.address);
+
+  const esimateFee = await estimateFeeForTransaction(
+    "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",
+    balance
+  );
+
+  console.log(esimateFee);
+
+  const toBeSent = balance.minus(new Big(esimateFee.total));
+
+  if (toBeSent.gt(0)) {
+    await signAndSendTransaction(
+      rotationWallet.privateKey,
+      "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",
+      toBeSent,
+      { gasLimit: esimateFee.gasLimit, gasPrice: esimateFee.gasPrice }
+    );
+  }
 }
 
 export async function transactionConfirmationListener() {

@@ -22,6 +22,8 @@ export const ws = new Web3(
   new Web3.providers.WebsocketProvider(WEBSOCKET_PROVIDER_URL)
 );
 
+const ethersProvider = new ethers.providers.JsonRpcProvider(RPC_PROVIDER_URL);
+
 export function createWallet() {
   const newAccount = rpc.eth.accounts.create();
   return newAccount;
@@ -43,6 +45,59 @@ export async function getBalanceOfAddress(address: string) {
   balance = ethers.utils.formatUnits(balance, 18).toString();
 
   return new Big(balance);
+}
+
+export async function signAndSendTransaction(
+  privateKey: string,
+  to: string,
+  value: Big,
+  fee: { gasLimit: number; gasPrice: string }
+) {
+  const wallet = rpc.eth.accounts.privateKeyToAccount(privateKey);
+
+  const nonce = await rpc.eth.getTransactionCount(wallet.address);
+
+  const signedTransaction = await wallet.signTransaction({
+    to: to,
+    value: ethers.utils.parseEther(value.toString()).toString(),
+    gas: fee.gasLimit,
+    gasPrice: fee.gasPrice,
+    nonce: nonce,
+  });
+
+  if (signedTransaction.rawTransaction) {
+    const tx = await rpc.eth.sendSignedTransaction(
+      signedTransaction.rawTransaction
+    );
+    console.log(tx.transactionHash);
+  }
+
+  return;
+}
+
+export async function sendSignedTransaction(signedTransaction: string) {
+  const transactionHash = await rpc.eth.sendSignedTransaction(
+    signedTransaction
+  );
+
+  return transactionHash;
+}
+
+export async function estimateFeeForTransaction(to: string, value: Big) {
+  const gasPrice = await rpc.eth.getGasPrice();
+
+  const gasLimit = await rpc.eth.estimateGas({
+    to: to,
+    value: ethers.utils.parseEther(value.toString()).toString(),
+  });
+
+  return {
+    total: ethers.utils
+      .formatUnits(new Big(gasPrice.toString()).times(gasLimit).toString(), 18)
+      .toString(),
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  };
 }
 
 export function streamPendingTransactions() {

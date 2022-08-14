@@ -96,6 +96,10 @@ export function findPaymentsWithStatus(status: PaymentStatus) {
   return PaymentState.filter((payment) => payment.status === status);
 }
 
+export function findPaymentsById(id: string) {
+  return PaymentState.find((payment) => payment.id === id);
+}
+
 export function updatePaymentPaid(payment: IPayment, paid: Big) {
   payment.paid = paid;
   updatePayment(payment);
