@@ -2,6 +2,7 @@ import Big from "big.js";
 import { scheduleJob } from "node-schedule";
 import { DomesticEvent, eventStorage, KnownEvents } from "../infra/event";
 import { PurchaseInitalizedEvent } from "../purchase/events/purchase-initalized.event";
+import { PurchaseOverpaidEvent } from "../purchase/events/purchase-overpaid.event";
 import { PurchaseStartedWaitingForPayment } from "../purchase/events/purchase-started-watch-for-payment.event";
 import { PurchaseUnderpaidEvent } from "../purchase/events/purchase-underpaid.event";
 import { getConfirmedBalanceOnRotationWalletToDate } from "../rotation-history/rotation-hisory.repository";
@@ -58,7 +59,7 @@ function validateOverpaid(payment: IPayment) {
   if (payment.paid.gt(payment.amount)) {
     payment.status = PaymentStatus.overpaid;
 
-    new DomesticEvent(KnownEvents.paymentOverpaid, payment);
+    new PurchaseOverpaidEvent(payment);
 
     // TODO: Refund additional payment to sender
 
