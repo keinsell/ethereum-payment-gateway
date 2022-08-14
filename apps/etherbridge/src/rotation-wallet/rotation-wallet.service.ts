@@ -12,6 +12,7 @@ import {
   accountBalanceChangeOnRotationWallet,
   confirmBalanceChangesAfterBlock,
 } from "../rotation-history/rotation-hisory.repository";
+import { FoundPendingTransactionEvent } from "./events/pendingTransactionFound.event";
 import {
   createRotationWalletFromAccount,
   findAvailableRotationWallet,
@@ -78,10 +79,7 @@ export async function pendingTransactionListener() {
           isConfirmed: false,
         });
 
-        new DomesticEvent("pendingTransaction", {
-          wallet: wallet,
-          transaction,
-        });
+        new FoundPendingTransactionEvent(transaction, wallet);
       }
     }
   });
