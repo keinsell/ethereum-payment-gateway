@@ -8,7 +8,7 @@
  * 5. {@link PurchaseStatus.overpaid **OVERPAID**} & {@link PurchaseStatus.underpaid **UNDERPAID**} situational statuses which will be applied when user will mistake amount sent to payment declaration. System will automatically try to resolve such issues, in case of **UNDERPAID** system will wait for additional payment from end-customer and if such will be not met until expiration time, transaction will be **REFUNDED**. If **OVERPAID** system will refund additional payment to end-customer by provided refund address, to reduce transaction size to previously set.
  * 6. {@link PurchaseStatus.delivery **DELIVERY**}, payment declaration is performing deliver to end-customer.
  * 7. {@link PurchaseStatus.refundPending **REFUND_PENDING**}, {@link PurchaseStatus.missingRefundAdress **MISSING_REFUND_ADDRESS**} are situational statuses of previously defined statuses, in cases where we aren't really able to perform refund for made transactions.
- * 8. {@link PurchaseStatus.completed **COMPLETED**}, {@link PurchaseStatus.refunded **REFUNDED**} and {@link PurchaseStatus.expired **EXPIRED**}. Several statues that end payment delclaration just for different reasons.
+ * 8. {@link PurchaseStatus.completed **COMPLETED**}, {@link PurchaseStatus.chargeback **CHARGEBACK**} and {@link PurchaseStatus.expired **EXPIRED**}. Several statues that end payment delclaration just for different reasons.
  */
 export enum PurchaseStatus {
   /** Default transaction status once they are created in system. */
@@ -21,7 +21,7 @@ export enum PurchaseStatus {
   delivery = "DELIVERY",
   refundPending = "REFUND_PENDING",
   missingRefundAdress = "MISSING_REFUND_ADDRESS",
-  refunded = "REFUNDED",
+  chargeback = "CHARGEBACK",
   expired = "EXPIRED",
   completed = "COMPLETED",
 }
