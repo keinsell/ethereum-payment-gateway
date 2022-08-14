@@ -4,9 +4,10 @@ import {
   createWallet,
   estimateFeeForTransaction,
   getBalanceOfAddress,
+  getNonce,
   getTransactionByHash,
   sendSignedTransaction,
-  signAndSendTransaction,
+  signTransaction,
   steamActualBlock,
   streamPendingTransactions,
 } from "../blockchain/blockchain.service";
@@ -99,22 +100,31 @@ export async function payoutForWalletWithBiggestCapial() {
 
   const balance = await getBalanceOfAddress(rotationWallet.address);
 
-  const esimateFee = await estimateFeeForTransaction(
-    "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",
-    balance
-  );
+  const esimateFee = await estimateFeeForTransaction({
+    to: "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",
+    value: balance.toString(),
+  });
 
   console.log(esimateFee);
 
-  const toBeSent = balance.minus(new Big(esimateFee.total));
+  let reducedBalance = balance.minus(esimateFee.total).toString();
+  reducedBalance = ethers.utils
+    .parseEther(reducedBalance.toString())
+    .toString();
 
-  if (toBeSent.gt(0)) {
-    await signAndSendTransaction(
-      rotationWallet.privateKey,
-      "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",
-      toBeSent,
-      { gasLimit: esimateFee.gasLimit, gasPrice: esimateFee.gasPrice }
-    );
+  const signedTransaction = await signTransaction(
+    {
+      to: "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",
+      value: reducedBalance,
+      gas: esimateFee.gasLimit,
+      gasPrice: esimateFee.gasPrice,
+      nonce: await getNonce(rotationWallet.address),
+    },
+    rotationWallet.privateKey
+  );
+
+  if (signedTransaction.rawTransaction) {
+    await sendSignedTransaction(signedTransaction.rawTransaction);
   }
 }
 

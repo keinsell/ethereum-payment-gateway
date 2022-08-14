@@ -1,6 +1,8 @@
 import Big from "big.js";
 import { ethers } from "ethers";
 import Web3 from "web3";
+import { TransactionConfig } from "web3-eth";
+import { Wallet } from "web3-eth-accounts";
 import {
   RPC_PROVIDER_URL,
   WEBSOCKET_PROVIDER_URL,
@@ -47,57 +49,41 @@ export async function getBalanceOfAddress(address: string) {
   return new Big(balance);
 }
 
-export async function signAndSendTransaction(
-  privateKey: string,
-  to: string,
-  value: Big,
-  fee: { gasLimit: number; gasPrice: string }
+export async function estimateFeeForTransaction(
+  transaction: TransactionConfig
 ) {
-  const wallet = rpc.eth.accounts.privateKeyToAccount(privateKey);
+  const gasPrice = await ethersProvider.getGasPrice();
+  const gasLimit = await rpc.eth.estimateGas(transaction);
 
-  const nonce = await rpc.eth.getTransactionCount(wallet.address);
+  let total = new Big(gasPrice.toString()).times(gasLimit).toString();
 
-  const signedTransaction = await wallet.signTransaction({
-    to: to,
-    value: ethers.utils.parseEther(value.toString()).toString(),
-    gas: fee.gasLimit,
-    gasPrice: fee.gasPrice,
-    nonce: nonce,
-  });
-
-  if (signedTransaction.rawTransaction) {
-    const tx = await rpc.eth.sendSignedTransaction(
-      signedTransaction.rawTransaction
-    );
-    console.log(tx.transactionHash);
-  }
-
-  return;
-}
-
-export async function sendSignedTransaction(signedTransaction: string) {
-  const transactionHash = await rpc.eth.sendSignedTransaction(
-    signedTransaction
-  );
-
-  return transactionHash;
-}
-
-export async function estimateFeeForTransaction(to: string, value: Big) {
-  const gasPrice = await rpc.eth.getGasPrice();
-
-  const gasLimit = await rpc.eth.estimateGas({
-    to: to,
-    value: ethers.utils.parseEther(value.toString()).toString(),
-  });
+  total = ethers.utils.formatUnits(total, 18).toString();
 
   return {
-    total: ethers.utils
-      .formatUnits(new Big(gasPrice.toString()).times(gasLimit).toString(), 18)
-      .toString(),
-    gasPrice: gasPrice,
+    total: new Big(total),
+    gasPrice: gasPrice.toString(),
     gasLimit: gasLimit,
   };
+}
+
+export async function signTransaction(
+  transaction: TransactionConfig,
+  privateKey: string
+) {
+  const wallet = rpc.eth.accounts.privateKeyToAccount(privateKey);
+  const signedTransaction = await wallet.signTransaction(transaction);
+  return signedTransaction;
+}
+
+export async function sendSignedTransaction(transactionString: string) {
+  const tx = await rpc.eth.sendSignedTransaction(transactionString);
+  console.log(tx);
+}
+
+export async function getNonce(address: string) {
+  return rpc.utils.toNumber(
+    await rpc.eth.getTransactionCount(address, "pending")
+  );
 }
 
 export function streamPendingTransactions() {
