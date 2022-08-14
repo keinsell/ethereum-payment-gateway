@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "ganache": "ganache -b 0 -a 5 -m 'memory syrup era this tiny rich notice tenant door punch gasp want' --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0"
   },
   "volta": {
     "node": "16.16.0"
