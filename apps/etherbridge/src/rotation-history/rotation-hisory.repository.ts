@@ -1,6 +1,7 @@
 import Big from "big.js";
 import { nanoid } from "nanoid";
 import { DomesticEvent } from "../infra/event";
+import { ConfirmedPendingTransactionEvent } from "../rotation-wallet/events/confirmedPendingTransaction.event";
 import {
   IRotationWallet,
   updateRotationWallet,
@@ -111,7 +112,11 @@ export function confirmBalanceChangesAfterBlock(block: number) {
 
     updateRotationWallet(wallet);
 
-    new DomesticEvent("confirmedBalanceChanged", RotationWalletHistory[index]);
+    const transactionHash = RotationWalletHistory[index]?.transactionHash;
+
+    if (transactionHash) {
+      new ConfirmedPendingTransactionEvent(transactionHash);
+    }
 
     RotationWalletHistory[index] = history;
   });
