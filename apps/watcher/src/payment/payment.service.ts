@@ -86,6 +86,8 @@ function validateExpired(payment: IPayment) {
   return false;
 }
 
+function validateUnconfirmedPayment(payment: IPayment) {}
+
 export async function performPaymentCheck(payment: IPayment) {
   const rotationWallet = findRotationWalletByAddress(payment.address);
 
@@ -100,6 +102,8 @@ export async function performPaymentCheck(payment: IPayment) {
   payment.paid = difference;
 
   validateExpired(payment);
+
+  validateUnconfirmedPayment(payment);
 
   validatePaid(payment);
   validateOverpaid(payment);

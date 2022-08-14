@@ -5,6 +5,8 @@ interface RotationWalletHistory {
   timestamp: Date;
   transactionHash?: string;
   blockNumber?: number;
+  from?: string;
+  isConfirmed?: boolean;
   balance: Big;
   wallet: IRotationWallet;
 }
@@ -16,10 +18,10 @@ export function getRotationWalletBalanceSinceDate(
   date: Date
 ) {
   const balance = RotationWalletHistory.filter(
-    (history) => history.wallet === wallet && history.timestamp > date
+    (history) => history.timestamp > date && history.wallet.id === wallet.id
   );
 
-  return balance.reduce((acc, curr) => acc.plus(curr.balance), Big(0));
+  return balance[0]?.balance;
 }
 
 export function getRotationWalletBalanceToDate(
@@ -35,12 +37,21 @@ export function getRotationWalletBalanceToDate(
 
 export function accountBalanceChangeOnRotationWallet(
   wallet: IRotationWallet,
-  balance: Big
+  difference?: Big,
+  additional?: {
+    transactionHash?: string;
+    blockNumber?: number;
+    from?: string;
+    isConfirmed?: boolean;
+  }
 ) {
-  const history = {
+  const balance = difference ? wallet.balance.plus(difference) : wallet.balance;
+
+  const history: RotationWalletHistory = {
     timestamp: new Date(),
-    balance,
+    balance: balance,
     wallet,
+    ...additional,
   };
 
   RotationWalletHistory.push(history);
@@ -50,10 +61,13 @@ export function accountBalanceChangeOnRotationWallet(
   return history;
 }
 
-export function getBalanceDifferenceSince(date: Date) {
+export function confirmBalanceChangesAfterBlock(block: number) {
   const balance = RotationWalletHistory.filter(
-    (history) => history.timestamp > date
+    (history) =>
+      history.blockNumber ?? (0 < block && history.isConfirmed === false)
   );
 
-  return balance.reduce((acc, curr) => acc.plus(curr.balance), Big(0));
+  balance.forEach((history) => {
+    history.isConfirmed = true;
+  });
 }

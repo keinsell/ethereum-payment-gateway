@@ -47,3 +47,36 @@ export async function updateConfirmedRotationWalletBalance(
 
   return wallet;
 }
+
+export async function pendingTransactionListener() {
+  const subscription = streamPendingTransactions();
+
+  subscription.on("data", async (transactionHash) => {
+    const transaction = await getTransactionByHash(transactionHash);
+
+    if (transaction.to) {
+      const wallet = findRotationWalletByAddress(transaction.to);
+
+      if (wallet) {
+        const transactionValue = new Big(
+          ethers.utils.formatUnits(transaction.value, 18).toString()
+        );
+
+        accountBalanceChangeOnRotationWallet(wallet, transactionValue, {
+          from: transaction.from,
+          blockNumber: transaction.blockNumber ?? undefined,
+          transactionHash: transaction.hash,
+          isConfirmed: false,
+        });
+      }
+    }
+  });
+}
+
+export async function transactionConfirmationListener() {
+  const subscription = steamActualBlock();
+
+  subscription.on("data", async (block) => {
+    confirmBalanceChangesAfterBlock(block.number);
+  });
+}

@@ -44,3 +44,15 @@ export async function getBalanceOfAddress(address: string) {
 
   return new Big(balance);
 }
+
+export function streamPendingTransactions() {
+  return ws.eth.subscribe("pendingTransactions");
+}
+
+export function steamActualBlock() {
+  return ws.eth.subscribe("newBlockHeaders");
+}
+
+export async function getTransactionByHash(transactionHash: string) {
+  return await ws.eth.getTransaction(transactionHash);
+}
