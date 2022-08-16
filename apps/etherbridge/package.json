@@ -10,7 +10,7 @@
     "ganache": "ganache -b 10 -a 5 --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0"
   },
   "volta": {
-    "node": "16.16.0"
+    "node": "16.17.0"
   },
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.13",
