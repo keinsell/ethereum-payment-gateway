@@ -14,6 +14,9 @@ import {
   getOrGenerateFreeRotationWallet,
   payoutForWalletWithBiggestCapial,
 } from "../rotation-wallet/rotation-wallet.service";
+import { PaymentCompletedEvent } from "./events/payment-completed.event";
+import { ConfirmedDeclarationPaymentEvent } from "./events/payment-confirmed.event";
+import { PaymentRecivedEvent } from "./events/payment-recived.event";
 import {
   createNewPayment,
   findPaymentsById,
@@ -44,9 +47,7 @@ function validatePaid(payment: IPayment) {
   if (payment.paid.eq(payment.amount)) {
     payment.status = PaymentStatus.confirmed;
 
-    // Additional validation of wallet balance by rpc call.
-
-    new DomesticEvent(KnownEvents.paymentConfirmed, payment);
+    new ConfirmedDeclarationPaymentEvent(payment);
 
     const rotationWallet = findRotationWalletByAddress(payment.address);
 
@@ -98,7 +99,8 @@ function validateExpired(payment: IPayment) {
 function markPaymentAsSuccess(payment: IPayment) {
   payment.status = PaymentStatus.completed;
   updatePayment(payment);
-  new DomesticEvent(KnownEvents.paymentCompleted, payment);
+
+  new PaymentCompletedEvent(payment);
 }
 
 function validateUnconfirmedPayment(payment: IPayment) {}
@@ -127,9 +129,8 @@ export async function performPaymentCheck(payment: IPayment) {
   const isUnderpaid = validateUnderpaid(payment);
 
   if (payment.status === PaymentStatus.confirmed) {
+    new PaymentRecivedEvent(payment);
     payment.status = PaymentStatus.delivery;
-
-    new DomesticEvent(KnownEvents.paymentPaymentRecived, payment);
   }
 
   releaseRotationWallet(rotationWallet);
@@ -149,10 +150,7 @@ scheduleJob("* * * * * *", async () => {
   let payments = findPaymentsWithStatus(PaymentStatus.delivery);
 
   for await (const payment of payments) {
-    console.log(`You bought liternally nothing by paying for ${payment.id}`);
-
     markPaymentAsSuccess(payment);
-
     await payoutForWalletWithBiggestCapial();
   }
 });
