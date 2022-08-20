@@ -6,15 +6,14 @@ import { Wallet } from "web3-eth-accounts";
 import {
   RPC_PROVIDER_URL,
   WEBSOCKET_PROVIDER_URL,
-} from "../config/environment";
-import { TransactionPostedEvent } from "../rotation-wallet/events/transaction-posted.event";
+} from "../../config/environment";
+import { TransactionPostedEvent } from "../../rotation-wallet/events/transaction-posted.event";
 
 export interface IBlockchainService {}
 export interface IGenericBlockchainWallet {}
 export interface IGenericTransaction {
   timestamp: Date;
   transactionHash: string;
-
   blockNumber: number;
   balance: Big;
 }

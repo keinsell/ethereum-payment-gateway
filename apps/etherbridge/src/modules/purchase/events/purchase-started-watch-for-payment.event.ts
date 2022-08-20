@@ -1,6 +1,6 @@
-import { DomesticEvent } from "../../infra/event"
+import { DomesticEvent } from "../../../infra/event"
 import consola from 'consola'
-import { ConsoleStyle } from "../../utilities/console-colors.util"
+import { ConsoleStyle } from "../../../utilities/console-colors.util"
 
 export class PurchaseStartedWaitingForPayment extends DomesticEvent {
     constructor(purchase: any) {

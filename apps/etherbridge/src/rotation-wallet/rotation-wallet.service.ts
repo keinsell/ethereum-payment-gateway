@@ -10,7 +10,7 @@ import {
   signTransaction,
   steamActualBlock,
   streamPendingTransactions,
-} from "../blockchain/blockchain.service";
+} from "../modules/blockchain/blockchain.service";
 import { DomesticEvent } from "../infra/event";
 import {
   accountBalanceChangeOnRotationWallet,
