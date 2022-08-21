@@ -3,7 +3,7 @@ import { infrastructureConfiguration } from "../../config/infrastructure.config"
 import { HistoricalVaultProperites } from "../../modules/history/entities/historical-balance.entity";
 import { Wallet } from "../../modules/wallet/entities/wallet.entity";
 
-interface IDatabaseModule {
+export interface IDatabaseModule {
   db: any;
   connect(): Promise<void>;
   disconnect(): Promise<void>;

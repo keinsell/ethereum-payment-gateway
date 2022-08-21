@@ -24,6 +24,7 @@
     "nanoid": "^4.0.0",
     "node-schedule": "^2.1.0",
     "random-js": "^2.1.0",
+    "realm": "^10.19.5",
     "signale": "^1.4.0",
     "web3": "^1.7.5",
     "web3-eth": "^1.7.5",
