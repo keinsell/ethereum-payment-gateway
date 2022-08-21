@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 
 export abstract class Entity {
   id: string;
-  constructor() {
-    this.id = nanoid();
+  constructor(id?: string) {
+    this.id = id ?? nanoid();
   }
 }

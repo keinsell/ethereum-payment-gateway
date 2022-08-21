@@ -19,8 +19,8 @@ export class Wallet extends Entity {
   isBusy: boolean;
   historicalData?: HistoricalVaultProperites[];
 
-  constructor(properties: WalletProperties) {
-    super();
+  constructor(properties: WalletProperties, id?: string) {
+    super(id);
     this.publicKey = properties.publicKey;
     this.privateKey = properties.privateKey;
     this.isBusy = properties.isBusy;

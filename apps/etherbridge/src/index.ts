@@ -20,7 +20,7 @@ w.generateWallet();
 const walletRepository = new WalletRepository();
 
 const wallet = await walletRepository.findWalletByAddress(
-  "0x5C8a6bA01E69E6F24a8d11A0e502a20E2bf12b26"
+  "0xfeb2df9631839bfdcb806b80514ef4a08466a5499ebb940e2f9327d40ff43fc5"
 );
 
 console.log(wallet);
