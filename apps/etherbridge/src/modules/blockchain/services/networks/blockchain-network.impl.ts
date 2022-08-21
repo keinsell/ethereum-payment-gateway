@@ -7,6 +7,7 @@ import {
   WalletProperties,
 } from "../../value-objects/wallet.blockchain.vo";
 import { FeeInformation } from "../../value-objects/fee-information.vo";
+import { TransactionResponse } from "../../value-objects/transaction-response.vo";
 
 export interface IBlockchainNetworkService {
   createWallet(): WalletProperties;
@@ -32,13 +33,15 @@ export interface IBlockchainNetworkService {
   getNonceOfPublicKey(publicKey: PublicKey): Promise<number>;
 
   /** Send signed transaction. */
-  sendSignedTransaction(signedTransaction: SignedTransaction): Promise<any>;
+  sendSignedTransaction(
+    signedTransaction: SignedTransaction
+  ): Promise<TransactionResponse>;
 
   /** Estimate fees for transaction. */
-  estimateTransactionFee(
-    transactionRequest: TransactionRequest
-  ): Promise<FeeInformation>;
+  // estimateTransactionFee(
+  //   transactionRequest: TransactionRequest
+  // ): Promise<FeeInformation>;
 
   /** Estimate total cost for transaction. */
-  estimateTransactionCost(feeInformation: FeeInformation): BigNumberish;
+  // estimateTransactionCost(feeInformation: FeeInformation): BigNumberish;
 }

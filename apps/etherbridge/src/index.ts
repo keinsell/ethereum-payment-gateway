@@ -1,6 +1,6 @@
 import { GANACHE_BLOCKCHAIN_CONFIG } from "./config/blockchain.config";
 import { ApplicationContainer } from "./container";
-import { EthereumLikeService } from "./modules/blockchain/services/network/ethereum-like.service";
+import { EthereumLikeService } from "./modules/blockchain/services/networks/ethereum.service";
 import { initalizeNewPayment, watchPayment } from "./payment/payment.service";
 
 const application = new ApplicationContainer();
@@ -11,4 +11,4 @@ await watchPayment(payment);
 
 const bs = new EthereumLikeService("ethereum", GANACHE_BLOCKCHAIN_CONFIG);
 
-console.log(bs.createWallet());
+bs.createWallet();

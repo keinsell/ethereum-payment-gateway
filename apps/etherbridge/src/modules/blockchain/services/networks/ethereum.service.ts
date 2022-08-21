@@ -1,7 +1,8 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import Web3 from "web3";
 import {
   PrivateKey,
+  PublicKey,
   WalletProperties,
 } from "../../value-objects/wallet.blockchain.vo";
 import { EthersMapper } from "../../mappers/ethers.mapper";
@@ -9,9 +10,16 @@ import { Web3Mapper } from "../../mappers/web3.mapper";
 import { TransactionRequest } from "../../value-objects/transaction-request.vo";
 import { BlockchainServiceConfiguration } from "../../../../config/blockchain.config";
 import { WalletGeneratedEvent } from "../../events/wallet-generated.event";
+import { IBlockchainNetworkService } from "./blockchain-network.impl";
+import { SignedTransaction } from "../../value-objects/singed-transaction.vo";
+import { TransactionResponse } from "../../value-objects/transaction-response.vo";
+import { ConnectedWebsocketEvent } from "../../events/connected-websocket.event";
+
+// TODO: Add keepAlive to websocket connection
+// https://github.com/ethers-io/ethers.js/issues/1053#issuecomment-808736570
 
 /** EvmService is universal class that can be used for Ethereum-like networks. */
-export class EthereumLikeService {
+export class EthereumLikeService implements IBlockchainNetworkService {
   /** Generic property which represents name of connected network. */
   private networkName: string;
 
@@ -23,7 +31,7 @@ export class EthereumLikeService {
 
   /** Object with websocket and rpc connection on ethers interface. */
   private ethers: {
-    ws: ethers.providers.WebSocketProvider;
+    ws?: ethers.providers.WebSocketProvider;
     rpc: ethers.providers.JsonRpcProvider;
   };
 
@@ -48,11 +56,11 @@ export class EthereumLikeService {
 
     // Initalize connections for ethers
     this.ethers = {
-      ws: new ethers.providers.WebSocketProvider(config.websocketUrl.href),
+      // ws: new ethers.providers.WebSocketProvider(config.websocketUrl.href),
       rpc: new ethers.providers.JsonRpcProvider(config.rpcUrl.href),
     };
 
-    if (!(this.ethers.ws && this.ethers.rpc)) {
+    if (!this.ethers.rpc) {
       throw new Error("Ethers is not initialized");
     }
 
@@ -95,5 +103,38 @@ export class EthereumLikeService {
 
     // Return signed transaction
     return signedTransaction;
+  }
+
+  async signTransaction(
+    transactionRequest: TransactionRequest
+  ): Promise<string> {
+    // Sign transaction with signer account
+    return await this.signer!.signTransaction(
+      this.ethersMapper.transactionRequest(transactionRequest)
+    );
+  }
+
+  async getBlockNumber(): Promise<number> {
+    return await this.web3.rpc.eth.getBlockNumber();
+  }
+
+  async getBalanceOfPublicKey(publicKey: PublicKey): Promise<ethers.BigNumber> {
+    const balance = await this.ethers.rpc.getBalance(publicKey);
+    return balance;
+  }
+
+  async getNonceOfPublicKey(publicKey: PublicKey): Promise<number> {
+    const nonce = await this.ethers.rpc.getTransactionCount(publicKey);
+    return nonce;
+  }
+
+  async sendSignedTransaction(
+    signedTransaction: SignedTransaction
+  ): Promise<TransactionResponse> {
+    const transaction = await this.ethers.rpc.sendTransaction(
+      signedTransaction
+    );
+
+    return transaction;
   }
 }

@@ -1,4 +1,4 @@
-import { IBlockchainNetworkService } from "../blockchain/services/network/network.service.impl";
+import { IBlockchainNetworkService } from "../blockchain/services/networks/blockchain-network.impl";
 
 export class WalletService {
   private NetworkService: IBlockchainNetworkService;

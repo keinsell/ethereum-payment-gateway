@@ -16,6 +16,6 @@ export class WalletGeneratedEvent extends BaseEvent<{
     
     const message = `Generated new wallet ${generatedPublicKey}`;
     
-    consola.debug(message);
+    consola.info(message);
   }
 }

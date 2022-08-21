@@ -6,4 +6,5 @@ export interface ProductProperties {
   image?: string;
   unit: string;
   pricePerUnit: Dinero;
+  isFlexible: boolean;
 }
