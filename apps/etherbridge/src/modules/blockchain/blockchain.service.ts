@@ -2,7 +2,6 @@ import Big from "big.js";
 import { ethers } from "ethers";
 import Web3 from "web3";
 import { TransactionConfig } from "web3-eth";
-import { Wallet } from "web3-eth-accounts";
 import {
   RPC_PROVIDER_URL,
   WEBSOCKET_PROVIDER_URL,

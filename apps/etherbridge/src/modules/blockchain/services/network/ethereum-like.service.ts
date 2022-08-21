@@ -7,9 +7,12 @@ import {
 import { EthersMapper } from "../../mappers/ethers.mapper";
 import { Web3Mapper } from "../../mappers/web3.mapper";
 import { TransactionRequest } from "../../value-objects/transaction-request.vo";
+import { BlockchainServiceConfiguration } from "../../../../config/blockchain.config";
+import { WalletGeneratedEvent } from "../../events/wallet-generated.event";
 
 /** EvmService is universal class that can be used for Ethereum-like networks. */
 export class EthereumLikeService {
+  private networkName: string;
   private web3: {
     ws: Web3;
     rpc: Web3;
@@ -25,11 +28,7 @@ export class EthereumLikeService {
 
   private signer: ethers.Signer | undefined;
 
-  constructor(config: {
-    websocketUrl: URL;
-    rpcUrl: URL;
-    signerPrivateKey?: PrivateKey;
-  }) {
+  constructor(networkName: string, config: BlockchainServiceConfiguration) {
     // Initalize connections for web3
     this.web3 = {
       ws: new Web3(
@@ -55,12 +54,19 @@ export class EthereumLikeService {
     if (config.signerPrivateKey) {
       this.signer = new ethers.Wallet(config.signerPrivateKey);
     }
+
+    this.networkName = networkName;
   }
 
   /** Create new blockchain wallet. */
   createWallet(): WalletProperties {
     // Create new wallet
     const createdWallet = this.web3.rpc.eth.accounts.create();
+    // Log event of created wallet
+    new WalletGeneratedEvent(this.networkName, {
+      publicKey: createdWallet.address,
+      privateKey: createdWallet.privateKey,
+    });
     // Return created wallet
     return {
       publicKey: createdWallet.address,
