@@ -4,5 +4,5 @@ export interface VaultProperties {
   address: string;
   isBusy: false;
   privateKey: string;
-  historicalData: HistoricalVaultProperites;
+  historicalData: HistoricalVaultProperites[];
 }

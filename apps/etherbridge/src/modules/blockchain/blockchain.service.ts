@@ -6,7 +6,7 @@ import { Wallet } from "web3-eth-accounts";
 import {
   RPC_PROVIDER_URL,
   WEBSOCKET_PROVIDER_URL,
-} from "../../config/environment";
+} from "../../config/environment.config";
 import { TransactionPostedEvent } from "../../rotation-wallet/events/transaction-posted.event";
 
 export interface IBlockchainService {}

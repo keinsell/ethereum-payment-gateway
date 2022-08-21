@@ -1,6 +1,10 @@
 import Big from "big.js";
 import { scheduleJob } from "node-schedule";
-import { DomesticEvent, eventStorage, KnownEvents } from "../infra/event";
+import {
+  DomesticEvent,
+  eventStorage,
+  KnownEvents,
+} from "../infrastructure/event";
 import { PurchaseInitalizedEvent } from "../modules/purchase/events/purchase-initalized.event";
 import { PurchaseOverpaidEvent } from "../modules/purchase/events/purchase-overpaid.event";
 import { PurchaseStartedWaitingForPayment } from "../modules/purchase/events/purchase-started-watch-for-payment.event";

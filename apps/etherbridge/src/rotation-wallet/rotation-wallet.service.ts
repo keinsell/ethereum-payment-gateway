@@ -11,7 +11,7 @@ import {
   steamActualBlock,
   streamPendingTransactions,
 } from "../modules/blockchain/blockchain.service";
-import { DomesticEvent } from "../infra/event";
+import { DomesticEvent } from "../infrastructure/event";
 import {
   accountBalanceChangeOnRotationWallet,
   confirmBalanceChangesAfterBlock,

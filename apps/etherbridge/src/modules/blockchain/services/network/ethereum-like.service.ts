@@ -1,0 +1,88 @@
+import { ethers } from "ethers";
+import Web3 from "web3";
+import {
+  PrivateKey,
+  WalletProperties,
+} from "../../value-objects/wallet.blockchain.vo";
+import { EthersMapper } from "../../mappers/ethers.mapper";
+import { Web3Mapper } from "../../mappers/web3.mapper";
+import { TransactionRequest } from "../../value-objects/transaction-request.vo";
+
+/** EvmService is universal class that can be used for Ethereum-like networks. */
+export class EthereumLikeService {
+  private web3: {
+    ws: Web3;
+    rpc: Web3;
+  };
+
+  private ethers: {
+    ws: ethers.providers.WebSocketProvider;
+    rpc: ethers.providers.JsonRpcProvider;
+  };
+
+  private ethersMapper = new EthersMapper();
+  private web3Mapper = new Web3Mapper();
+
+  private signer: ethers.Signer | undefined;
+
+  constructor(config: {
+    websocketUrl: URL;
+    rpcUrl: URL;
+    signerPrivateKey?: PrivateKey;
+  }) {
+    // Initalize connections for web3
+    this.web3 = {
+      ws: new Web3(
+        new Web3.providers.WebsocketProvider(config.websocketUrl.href)
+      ),
+      rpc: new Web3(new Web3.providers.HttpProvider(config.rpcUrl.href)),
+    };
+
+    if (!(this.web3.ws && this.web3.rpc)) {
+      throw new Error("Web3 is not initialized");
+    }
+
+    // Initalize connections for ethers
+    this.ethers = {
+      ws: new ethers.providers.WebSocketProvider(config.websocketUrl.href),
+      rpc: new ethers.providers.JsonRpcProvider(config.rpcUrl.href),
+    };
+
+    if (!(this.ethers.ws && this.ethers.rpc)) {
+      throw new Error("Ethers is not initialized");
+    }
+
+    if (config.signerPrivateKey) {
+      this.signer = new ethers.Wallet(config.signerPrivateKey);
+    }
+  }
+
+  /** Create new blockchain wallet. */
+  createWallet(): WalletProperties {
+    // Create new wallet
+    const createdWallet = this.web3.rpc.eth.accounts.create();
+    // Return created wallet
+    return {
+      publicKey: createdWallet.address,
+      privateKey: createdWallet.privateKey,
+    };
+  }
+
+  /** Sign transaction with provided private key of wallet. */
+  async signTransactionWithPrivateKey(
+    transaction: TransactionRequest,
+    privateKey: PrivateKey
+  ) {
+    // Prepare wallet for signing transaction
+    const signer = new ethers.Wallet(privateKey);
+
+    // Map transaction to ethers format
+    const _transaction = this.ethersMapper.transactionRequest(transaction);
+
+    // Create signed transaction
+    const signedTransaction = await signer.signTransaction(_transaction);
+
+    // Return signed transaction
+    return signedTransaction;
+  }
+}

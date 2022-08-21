@@ -1,4 +1,4 @@
-import { DomesticEvent } from "../../../infra/event"
+import { DomesticEvent } from "../../../infrastructure/event"
 import consola from 'consola'
 import { ConsoleStyle } from "../../../utilities/console-colors.util"
 
