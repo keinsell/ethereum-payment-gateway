@@ -5,22 +5,23 @@ import {
 } from "../../blockchain/value-objects/wallet.blockchain.vo";
 import { HistoricalVaultProperites } from "../../history/entities/historical-balance.entity";
 
+// TODO: Add network prop to Wallet
 export interface WalletProperties {
-  address: PublicKey;
+  publicKey: PublicKey;
   privateKey: PrivateKey;
   isBusy: boolean;
-  historicalData: HistoricalVaultProperites[];
+  historicalData?: HistoricalVaultProperites[];
 }
 
 export class Wallet extends Entity {
-  address: PublicKey;
+  publicKey: PublicKey;
   privateKey: PrivateKey;
   isBusy: boolean;
-  historicalData: HistoricalVaultProperites[];
+  historicalData?: HistoricalVaultProperites[];
 
   constructor(properties: WalletProperties) {
     super();
-    this.address = properties.address;
+    this.publicKey = properties.publicKey;
     this.privateKey = properties.privateKey;
     this.isBusy = properties.isBusy;
     this.historicalData = properties.historicalData;

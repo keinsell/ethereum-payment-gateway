@@ -17,7 +17,7 @@ export class WalletService {
     const generatedWallet = this.networkService.createWallet();
 
     const savedWallet = this.repository.createWallet({
-      address: generatedWallet.publicKey,
+      publicKey: generatedWallet.publicKey,
       privateKey: generatedWallet.privateKey,
       isBusy: false,
       historicalData: [],
