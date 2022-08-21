@@ -12,12 +12,16 @@ import { WalletGeneratedEvent } from "../../events/wallet-generated.event";
 
 /** EvmService is universal class that can be used for Ethereum-like networks. */
 export class EthereumLikeService {
+  /** Generic property which represents name of connected network. */
   private networkName: string;
+
+  /** Object with websocket and rpc connection on Web3 interface. */
   private web3: {
     ws: Web3;
     rpc: Web3;
   };
 
+  /** Object with websocket and rpc connection on ethers interface. */
   private ethers: {
     ws: ethers.providers.WebSocketProvider;
     rpc: ethers.providers.JsonRpcProvider;
@@ -26,6 +30,7 @@ export class EthereumLikeService {
   private ethersMapper = new EthersMapper();
   private web3Mapper = new Web3Mapper();
 
+  /** Signer account used as administrator account, it's used as default for some methods like signTransaction where we can skip adding privateKey. */
   private signer: ethers.Signer | undefined;
 
   constructor(networkName: string, config: BlockchainServiceConfiguration) {
