@@ -14,8 +14,7 @@ export class ConnectedWebsocketEvent extends BaseEvent<{
 
   override toConsole(): void {
 
-    
-    const message = `Connected to websocket...`;
+    const message = "Connected to websocket...";
     
     consola.info(message);
   }

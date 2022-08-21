@@ -14,6 +14,9 @@
       "outputs": ["dist/**", ".next/**", "public/dist/**"],
       "cache": true
     },
+    "ganache:up": {
+      "outputs": []
+    },
     "dev": {
       "cache": false,
       "inputs": ["src/**/*.ts", "lib/**/*.ts"]

@@ -14,6 +14,8 @@ import { IBlockchainNetworkService } from "./blockchain-network.impl";
 import { SignedTransaction } from "../../value-objects/singed-transaction.vo";
 import { TransactionResponse } from "../../value-objects/transaction-response.vo";
 import { ConnectedWebsocketEvent } from "../../events/connected-websocket.event";
+import { ProviderFee } from "../../value-objects/fee-information.vo";
+import { TransactionFee } from "../../value-objects/transaction-fee.vo";
 
 // TODO: Add keepAlive to websocket connection
 // https://github.com/ethers-io/ethers.js/issues/1053#issuecomment-808736570
@@ -35,8 +37,10 @@ export class EthereumLikeService implements IBlockchainNetworkService {
     rpc: ethers.providers.JsonRpcProvider;
   };
 
-  private ethersMapper = new EthersMapper();
-  private web3Mapper = new Web3Mapper();
+  private mapper: {
+    toEthers: EthersMapper;
+    toWeb3: Web3Mapper;
+  };
 
   /** Signer account used as administrator account, it's used as default for some methods like signTransaction where we can skip adding privateKey. */
   private signer: ethers.Signer | undefined;
@@ -69,6 +73,12 @@ export class EthereumLikeService implements IBlockchainNetworkService {
     }
 
     this.networkName = networkName;
+
+    // Attach Mappers
+    this.mapper = {
+      toEthers: new EthersMapper(),
+      toWeb3: new Web3Mapper(),
+    };
   }
 
   /** Create new blockchain wallet. */
@@ -95,11 +105,10 @@ export class EthereumLikeService implements IBlockchainNetworkService {
     // Prepare wallet for signing transaction
     const signer = new ethers.Wallet(privateKey);
 
-    // Map transaction to ethers format
-    const _transaction = this.ethersMapper.transactionRequest(transaction);
-
     // Create signed transaction
-    const signedTransaction = await signer.signTransaction(_transaction);
+    const signedTransaction = await signer.signTransaction(
+      this.mapper.toEthers.transactionRequest(transaction)
+    );
 
     // Return signed transaction
     return signedTransaction;
@@ -110,7 +119,7 @@ export class EthereumLikeService implements IBlockchainNetworkService {
   ): Promise<string> {
     // Sign transaction with signer account
     return await this.signer!.signTransaction(
-      this.ethersMapper.transactionRequest(transactionRequest)
+      this.mapper.toEthers.transactionRequest(transactionRequest)
     );
   }
 
@@ -136,5 +145,48 @@ export class EthereumLikeService implements IBlockchainNetworkService {
     );
 
     return transaction;
+  }
+
+  async getFeeInformation(
+    priority: "normal" | "high" = "normal"
+  ): Promise<ProviderFee> {
+    const gasPrice = await this.ethers.rpc.getGasPrice();
+    const feeData = await this.ethers.rpc.getFeeData();
+
+    // Increase gasPrice by 50% if piority is high
+    const gasPriceWithPriority =
+      priority === "high" ? gasPrice.mul(1.5) : gasPrice;
+
+    return {
+      gasPrice: gasPriceWithPriority,
+      maxFeePerGas: feeData.maxFeePerGas ?? undefined,
+      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas ?? undefined,
+    };
+  }
+
+  async estimateTransactionFee(
+    transactionRequest: TransactionRequest,
+    fees: ProviderFee
+  ): Promise<TransactionFee> {
+    const gasLimit = await this.ethers.rpc.estimateGas(
+      this.mapper.toEthers.transactionRequest(transactionRequest)
+    );
+
+    let totalTransactionCost: BigNumber;
+
+    // Calculate total transaction cost for Type 2 transaction
+    if (fees.maxFeePerGas && fees.maxPriorityFeePerGas) {
+      totalTransactionCost = fees.maxFeePerGas.mul(gasLimit);
+    } else {
+      // Calculate total transaction cost for Type 0 transactions
+      totalTransactionCost = gasLimit.mul(
+        fees.gasPrice ?? (await this.ethers.rpc.getGasPrice())
+      );
+    }
+
+    return {
+      gasLimit: gasLimit,
+      totalTransactionCost: totalTransactionCost,
+    };
   }
 }

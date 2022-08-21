@@ -1,7 +1,7 @@
 import { JSONFile, Low } from "lowdb/lib";
 import { infrastructureConfiguration } from "../../config/infrastructure.config";
 import { HistoricalVaultProperites } from "../../modules/history/entities/historical-balance.entity";
-import { VaultProperties } from "../../modules/wallet/entities/vault.entity";
+import { Wallet } from "../../modules/wallet/entities/wallet.entity";
 
 interface IDatabaseModule {
   db: any;
@@ -11,10 +11,10 @@ interface IDatabaseModule {
 
 export class Lowdb implements IDatabaseModule {
   adapter = new JSONFile<{
-    wallets: VaultProperties[];
-    purchases: [];
+    wallets: Wallet[];
+    purchases: any[];
     histroical: HistoricalVaultProperites[];
-  }>(infrastructureConfiguration.database.jsonPath);
+  }>("db.json");
   db = new Low(this.adapter);
 
   constructor() {

@@ -1,0 +1,6 @@
+[35metherbridge:ganache:up[0m: cache hit, replaying output [2m85899dac34c0de25[0m
+[35metherbridge:ganache:up: [0m$ ganache -b 0 -a 5 --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0 -m 'bacon hole season silly brave obscure arena another firm slide debris expand' -d
+[35metherbridge:ganache:up: [0mganache v7.4.0 (@ganache/cli: 0.5.0, @ganache/core: 0.5.0)
+[35metherbridge:ganache:up: [0mValues for both "wallet.mnemonic" and "wallet.deterministic" cannot be specified; they are mutually exclusive.
+[35metherbridge:ganache:up: [0merror Command failed with exit code 1.
+[35metherbridge:ganache:up: [0minfo Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

@@ -1,9 +1,9 @@
 import Big from "big.js";
 import { Dinero } from "dinero.js";
-import { PurchaseCurrency } from "../../purchase/entities/purchase-currency.enum";
+import { PaymentCryptocurrency } from "../../payment/entities/payment-currency.enum";
 
 export interface ICurrencyRateProperties {
-  currency: PurchaseCurrency;
+  currency: PaymentCryptocurrency;
   name: string;
   timestamp: Date;
   price: Dinero;

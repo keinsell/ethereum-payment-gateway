@@ -6,8 +6,9 @@ import {
   PublicKey,
   WalletProperties,
 } from "../../value-objects/wallet.blockchain.vo";
-import { FeeInformation } from "../../value-objects/fee-information.vo";
+import { ProviderFee } from "../../value-objects/fee-information.vo";
 import { TransactionResponse } from "../../value-objects/transaction-response.vo";
+import { TransactionFee } from "../../value-objects/transaction-fee.vo";
 
 export interface IBlockchainNetworkService {
   createWallet(): WalletProperties;
@@ -37,11 +38,12 @@ export interface IBlockchainNetworkService {
     signedTransaction: SignedTransaction
   ): Promise<TransactionResponse>;
 
-  /** Estimate fees for transaction. */
-  // estimateTransactionFee(
-  //   transactionRequest: TransactionRequest
-  // ): Promise<FeeInformation>;
+  /** Get provider's fee information such as gasPrice */
+  getFeeInformation(priority: "normal" | "high"): Promise<ProviderFee>;
 
-  /** Estimate total cost for transaction. */
-  // estimateTransactionCost(feeInformation: FeeInformation): BigNumberish;
+  /** Estimate fees for transaction. */
+  estimateTransactionFee(
+    transactionRequest: TransactionRequest,
+    fees: ProviderFee
+  ): Promise<TransactionFee>;
 }
