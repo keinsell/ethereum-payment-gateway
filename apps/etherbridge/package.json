@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "test": "c8 ava",
-    "ganache:up": "ganache -b 0 -a 5 --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0 -m 'bacon hole season silly brave obscure arena another firm slide debris expand'"
+    "ganache:up": "ganache -b 0 -a 5 --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0 -m 'bacon hole season silly brave obscure arena another firm slide debris expand' --networkId 1337 --database.dbPath .cache/ganache"
   },
   "volta": {
     "node": "16.17.0"
