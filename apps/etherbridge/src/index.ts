@@ -1,3 +1,5 @@
+import { err, ok, Result } from "neverthrow";
+import { UnexpectedError } from "./commons/error/error.impl";
 import { GANACHE_BLOCKCHAIN_CONFIG } from "./config/blockchain.config";
 import { ApplicationContainer } from "./container";
 import { EthereumLikeService } from "./modules/blockchain/services/networks/ethereum.service";
@@ -24,3 +26,21 @@ const wallet = await walletRepository.findWalletByAddress(
 );
 
 console.log(wallet);
+
+function throwik(): Result<string, UnexpectedError> {
+  const random = Math.random();
+
+  if (random > 0.5) {
+    return err(new UnexpectedError({ xd: "sasfds" }));
+  }
+
+  return ok("Something");
+}
+
+const x = throwik();
+
+const y = x.unwrapOr("default");
+console.log(y);
+
+const z = x.isErr();
+console.log(z ? x.error.message : undefined);
