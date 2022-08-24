@@ -4241,10 +4241,10 @@ functions-have-names@^1.2.2:
   resolved "https://registry.npmjs.org/functions-have-names/-/functions-have-names-1.2.3.tgz"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
-ganache@7.4.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/ganache/-/ganache-7.4.0.tgz#24c56a55c15f6031ffbbb8a634fbb52d752f155e"
-  integrity sha512-e1x0ZJsJ5zUP+hWtpSNv+FaavRdcrQhQwe+QZ4kVon5mDm6RgFpe3PzNDJXg82AeqqslohJeK9UinZbZzjewjQ==
+ganache@7.4.1:
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/ganache/-/ganache-7.4.1.tgz#5f109619067baf25dec15f92a8d919e5bfeedb4d"
+  integrity sha512-yLlfsHQpJmXRD/Ryd7JcHTzL9q0cE+BDu3fmMFmJ/0Nl8GYBDfZrtyzm/8nSRWiXoWR98ER/c3PZrhR9KDySeA==
   dependencies:
     "@trufflesuite/bigint-buffer" "1.1.10"
     "@types/bn.js" "^5.1.0"
