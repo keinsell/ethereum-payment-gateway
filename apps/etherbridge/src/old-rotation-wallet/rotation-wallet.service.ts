@@ -15,7 +15,7 @@ import { DomesticEvent } from "../infrastructure/event";
 import {
   accountBalanceChangeOnRotationWallet,
   confirmBalanceChangesAfterBlock,
-} from "../rotation-history/rotation-hisory.repository";
+} from "../old-rotation-history/rotation-hisory.repository";
 import { toBig, toWei, toWeiFromEther } from "../utilities/decimals.util";
 import { FundsWithdrawn } from "./events/funds-withdrawed.event";
 import { FoundPendingTransactionEvent } from "./events/pending-transaction-found.event";

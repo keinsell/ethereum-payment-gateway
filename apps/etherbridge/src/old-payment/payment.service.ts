@@ -9,15 +9,15 @@ import { PurchaseInitalizedEvent } from "../modules/purchase/events/purchase-ini
 import { PurchaseOverpaidEvent } from "../modules/purchase/events/purchase-overpaid.event";
 import { PurchaseStartedWaitingForPayment } from "../modules/purchase/events/purchase-started-watch-for-payment.event";
 import { PurchaseUnderpaidEvent } from "../modules/purchase/events/purchase-underpaid.event";
-import { getConfirmedBalanceOnRotationWalletToDate } from "../rotation-history/rotation-hisory.repository";
+import { getConfirmedBalanceOnRotationWalletToDate } from "../old-rotation-history/rotation-hisory.repository";
 import {
   findRotationWalletByAddress,
   releaseRotationWallet,
-} from "../rotation-wallet/rotation-wallet.repository";
+} from "../old-rotation-wallet/rotation-wallet.repository";
 import {
   getOrGenerateFreeRotationWallet,
   payoutForWalletWithBiggestCapial,
-} from "../rotation-wallet/rotation-wallet.service";
+} from "../old-rotation-wallet/rotation-wallet.service";
 import { PaymentCompletedEvent } from "./events/payment-completed.event";
 import { ConfirmedDeclarationPaymentEvent } from "./events/payment-confirmed.event";
 import { PaymentRecivedEvent } from "./events/payment-recived.event";

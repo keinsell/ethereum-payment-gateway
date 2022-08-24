@@ -1,7 +1,7 @@
 import {
   pendingTransactionListener,
   transactionConfirmationListener,
-} from "./rotation-wallet/rotation-wallet.service";
+} from "./old-rotation-wallet/rotation-wallet.service";
 
 export class ApplicationContainer {
   public pendingTransactionSubscription: any;

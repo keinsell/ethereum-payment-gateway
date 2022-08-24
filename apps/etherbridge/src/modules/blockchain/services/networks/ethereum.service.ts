@@ -13,10 +13,10 @@ import { WalletGeneratedEvent } from "../../events/wallet-generated.event";
 import { IBlockchainNetworkService } from "./blockchain-network.impl";
 import { SignedTransaction } from "../../value-objects/singed-transaction.vo";
 import { TransactionResponse } from "../../value-objects/transaction-response.vo";
-import { ConnectedWebsocketEvent } from "../../events/connected-websocket.event";
 import { ProviderFee } from "../../value-objects/fee-information.vo";
 import { TransactionFee } from "../../value-objects/transaction-fee.vo";
 
+// TODO: Add mnemonic to constructor for HDWallet management
 // TODO: Add keepAlive to websocket connection
 // https://github.com/ethers-io/ethers.js/issues/1053#issuecomment-808736570
 

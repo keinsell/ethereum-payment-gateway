@@ -2,7 +2,7 @@ import Big from "big.js";
 import ms from "ms";
 import { nanoid } from "nanoid";
 import random from "random-js";
-import { IRotationWallet } from "../rotation-wallet/rotation-wallet.repository";
+import { IRotationWallet } from "../old-rotation-wallet/rotation-wallet.repository";
 
 /**
  * Payment Status stands for globally defined statuses that are used to define current state of payment declaration.

@@ -5,7 +5,10 @@ import { ApplicationContainer } from "./container";
 import { EthereumLikeService } from "./modules/blockchain/services/networks/ethereum.service";
 import { WalletRepository } from "./modules/wallet/repositories/realm.wallet.repository";
 import { WalletService } from "./modules/wallet/wallet.service";
-import { initalizeNewPayment, watchPayment } from "./payment/payment.service";
+import {
+  initalizeNewPayment,
+  watchPayment,
+} from "./old-payment/payment.service";
 
 const application = new ApplicationContainer();
 application.boostrap();

@@ -1,11 +1,11 @@
 import Big from "big.js";
 import { nanoid } from "nanoid";
 import { DomesticEvent } from "../infrastructure/event";
-import { ConfirmedPendingTransactionEvent } from "../rotation-wallet/events/confirmed-pending-transaction.event";
+import { ConfirmedPendingTransactionEvent } from "../old-rotation-wallet/events/confirmed-pending-transaction.event";
 import {
   IRotationWallet,
   updateRotationWallet,
-} from "../rotation-wallet/rotation-wallet.repository";
+} from "../old-rotation-wallet/rotation-wallet.repository";
 
 interface RotationWalletHistory {
   id: string;
