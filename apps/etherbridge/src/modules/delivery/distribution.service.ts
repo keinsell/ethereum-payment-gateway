@@ -3,4 +3,4 @@ import {
   findPaymentsWithStatus,
   PaymentStatus,
   updatePayment,
-} from "../../old-payment/payment.repository";
+} from "../old-payment/payment.repository";

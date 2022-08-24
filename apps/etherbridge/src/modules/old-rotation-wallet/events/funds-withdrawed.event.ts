@@ -1,9 +1,9 @@
-import { DomesticEvent } from "../../infrastructure/event"
+import { DomesticEvent } from "../../../infrastructure/event"
 import consola from 'consola'
-import { ConsoleStyle } from "../../utilities/console-colors.util"
+import { ConsoleStyle } from "../../../utilities/console-colors.util"
 import { Transaction } from "web3-eth"
 import { IRotationWallet } from "../rotation-wallet.repository"
-import { toEther } from "../../utilities/decimals.util"
+import { toEther } from "../../../utilities/decimals.util"
 
 export class FundsWithdrawn extends DomesticEvent {
     constructor(transactionHash: string, rotationWallet: IRotationWallet, transaction?: Transaction) {

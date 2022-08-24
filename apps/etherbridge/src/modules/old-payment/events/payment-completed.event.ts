@@ -1,6 +1,6 @@
-import { DomesticEvent } from "../../infrastructure/event"
+import { DomesticEvent } from "../../../infrastructure/event"
 import consola from 'consola'
-import { ConsoleStyle } from "../../utilities/console-colors.util"
+import { ConsoleStyle } from "../../../utilities/console-colors.util"
 import { Transaction } from "web3-eth"
 
 export class PaymentCompletedEvent extends DomesticEvent {

@@ -4,11 +4,11 @@ import {
   DomesticEvent,
   eventStorage,
   KnownEvents,
-} from "../infrastructure/event";
-import { PurchaseInitalizedEvent } from "../modules/purchase/events/purchase-initalized.event";
-import { PurchaseOverpaidEvent } from "../modules/purchase/events/purchase-overpaid.event";
-import { PurchaseStartedWaitingForPayment } from "../modules/purchase/events/purchase-started-watch-for-payment.event";
-import { PurchaseUnderpaidEvent } from "../modules/purchase/events/purchase-underpaid.event";
+} from "../../infrastructure/event";
+import { PurchaseInitalizedEvent } from "../purchase/events/purchase-initalized.event";
+import { PurchaseOverpaidEvent } from "../purchase/events/purchase-overpaid.event";
+import { PurchaseStartedWaitingForPayment } from "../purchase/events/purchase-started-watch-for-payment.event";
+import { PurchaseUnderpaidEvent } from "../purchase/events/purchase-underpaid.event";
 import { getConfirmedBalanceOnRotationWalletToDate } from "../old-rotation-history/rotation-hisory.repository";
 import {
   findRotationWalletByAddress,
