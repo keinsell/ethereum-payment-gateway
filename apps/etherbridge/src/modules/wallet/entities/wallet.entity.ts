@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import { Entity } from "../../../commons/entity/entity.impl";
 import {
   PrivateKey,
@@ -9,13 +10,15 @@ import { HistoricalVaultProperites } from "../../history/entities/historical-bal
 export interface WalletProperties {
   publicKey: PublicKey;
   privateKey: PrivateKey;
+  balance?: BigNumber;
   isBusy: boolean;
   historicalData?: HistoricalVaultProperites[];
 }
 
-export class Wallet extends Entity {
+export class Wallet extends Entity implements WalletProperties {
   publicKey: PublicKey;
   privateKey: PrivateKey;
+  balance: BigNumber;
   isBusy: boolean;
   historicalData?: HistoricalVaultProperites[];
 
@@ -23,6 +26,7 @@ export class Wallet extends Entity {
     super(id);
     this.publicKey = properties.publicKey;
     this.privateKey = properties.privateKey;
+    this.balance = properties.balance ?? BigNumber.from(0);
     this.isBusy = properties.isBusy;
     this.historicalData = properties.historicalData;
   }

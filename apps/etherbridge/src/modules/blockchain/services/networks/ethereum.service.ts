@@ -15,9 +15,12 @@ import { SignedTransaction } from "../../value-objects/singed-transaction.vo";
 import { TransactionResponse } from "../../value-objects/transaction-response.vo";
 import { ProviderFee } from "../../value-objects/fee-information.vo";
 import { TransactionFee } from "../../value-objects/transaction-fee.vo";
+import ms from "ms";
+import { ConnectedWebsocketEvent } from "../../events/websocket-connection/connected-websocket.event";
 
 // TODO: Add mnemonic to constructor for HDWallet management
 // TODO: Add keepAlive to websocket connection
+// TODO: Think how to expose pending transactions and how to filter them to other services, that would be useful in maintaining stable architecture.
 // https://github.com/ethers-io/ethers.js/issues/1053#issuecomment-808736570
 
 /** EvmService is universal class that can be used for Ethereum-like networks. */
@@ -42,10 +45,14 @@ export class EthereumLikeService implements IBlockchainNetworkService {
     toWeb3: Web3Mapper;
   };
 
+  private config: BlockchainServiceConfiguration;
+
   /** Signer account used as administrator account, it's used as default for some methods like signTransaction where we can skip adding privateKey. */
   private signer: ethers.Signer | undefined;
 
   constructor(networkName: string, config: BlockchainServiceConfiguration) {
+    this.config = config;
+
     // Initalize connections for web3
     this.web3 = {
       ws: new Web3(
@@ -60,7 +67,7 @@ export class EthereumLikeService implements IBlockchainNetworkService {
 
     // Initalize connections for ethers
     this.ethers = {
-      // ws: new ethers.providers.WebSocketProvider(config.websocketUrl.href),
+      ws: new ethers.providers.WebSocketProvider(config.websocketUrl.href),
       rpc: new ethers.providers.JsonRpcProvider(config.rpcUrl.href),
     };
 
@@ -79,6 +86,39 @@ export class EthereumLikeService implements IBlockchainNetworkService {
       toEthers: new EthersMapper(),
       toWeb3: new Web3Mapper(),
     };
+
+    this.intializeWebsocketConnection();
+  }
+
+  intializeWebsocketConnection() {
+    console.log(this.config.websocketUrl.href);
+    this.ethers.ws = new ethers.providers.WebSocketProvider(
+      this.config.websocketUrl.href
+    );
+    this.ethers.ws.on("pending", async (transactionHash) => {
+      console.log(await this.ethers.ws?.getTransaction(transactionHash));
+    });
+
+    this.ethers.ws._websocket.on("open", () => {
+      new ConnectedWebsocketEvent(this.networkName, this.config.websocketUrl);
+    });
+
+    this.ethers.ws._websocket.on("error", (error: any) => {
+      console.log("Error...");
+      setTimeout(this.intializeWebsocketConnection, ms("3s"));
+    });
+
+    this.ethers.ws._websocket.on("close", async (code: number) => {
+      console.log(
+        `Connection lost with code ${code}! Attempting reconnect in 3s...`
+      );
+
+      if (this.ethers.ws) {
+        this.ethers.ws._websocket.terminate();
+      }
+
+      setTimeout(this.intializeWebsocketConnection, ms("3s"));
+    });
   }
 
   /** Create new blockchain wallet. */

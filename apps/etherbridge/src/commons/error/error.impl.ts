@@ -1,6 +1,8 @@
 import { Err } from "neverthrow";
 import { DomainResult } from "../result/result.impl";
 
+// https://khalilstemmler.com/articles/enterprise-typescript-nodejs/functional-error-handling/
+
 interface DomainError {
   message: string;
   timestamp: Date;

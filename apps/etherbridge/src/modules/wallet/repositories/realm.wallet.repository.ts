@@ -92,7 +92,7 @@ export class WalletRepository implements IWalletRepository {
     return this.mapper.toDomain(wallet);
   }
 
-  async findUnusedWallet() {
+  async findAnyFreeWallet() {
     const wallets = realm.objects<RealmWalletSchema>("Wallet");
 
     const matchedPublicKey = wallets.filtered("isBusy = false");

@@ -1,4 +1,5 @@
 import { IBlockchainNetworkService } from "../blockchain/services/networks/blockchain-network.impl";
+import { Wallet } from "./entities/wallet.entity";
 import { IWalletRepository } from "./repositories/wallet.repository.impl";
 
 export class WalletService {
@@ -13,7 +14,7 @@ export class WalletService {
     this.repository = repository;
   }
 
-  public async generateWallet(): Promise<any> {
+  public async generateWallet(): Promise<Wallet> {
     const generatedWallet = this.networkService.createWallet();
 
     const savedWallet = this.repository.createWallet({
@@ -24,5 +25,19 @@ export class WalletService {
     });
 
     return savedWallet;
+  }
+
+  public async synchronizeWalletBalance(wallet: Wallet): Promise<Wallet> {
+    const balance = await this.networkService.getBalanceOfPublicKey(
+      wallet.publicKey
+    );
+
+    wallet.balance = balance;
+
+    await this.repository.save(wallet);
+
+    // TODO: Add histrical balance record
+
+    return wallet;
   }
 }

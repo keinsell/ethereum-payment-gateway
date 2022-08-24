@@ -9,24 +9,13 @@ import {
   initalizeNewPayment,
   watchPayment,
 } from "./modules/old-payment/payment.service";
+import { Wallet } from "./modules/wallet/entities/wallet.entity";
 
 const application = new ApplicationContainer();
 application.boostrap();
 
 const payment = await initalizeNewPayment();
 await watchPayment(payment);
-
-const bs = new EthereumLikeService("ethereum", GANACHE_BLOCKCHAIN_CONFIG);
-
-const w = new WalletService(bs, new WalletRepository());
-
-w.generateWallet();
-
-const walletRepository = new WalletRepository();
-
-const wallet = await walletRepository.findWalletByAddress(
-  "0xfeb2df9631839bfdcb806b80514ef4a08466a5499ebb940e2f9327d40ff43fc5"
-);
 
 // console.log(wallet);
 
