@@ -1,15 +1,8 @@
-import { err, ok, Result } from "neverthrow";
-import { UnexpectedError } from "./commons/error/error.impl";
-import { GANACHE_BLOCKCHAIN_CONFIG } from "./config/blockchain.config";
 import { ApplicationContainer } from "./container";
-import { EthereumLikeService } from "./modules/blockchain/services/networks/ethereum.service";
-import { WalletRepository } from "./modules/wallet/repositories/realm.wallet.repository";
-import { WalletService } from "./modules/wallet/wallet.service";
 import {
   initalizeNewPayment,
   watchPayment,
 } from "./modules/old-payment/payment.service";
-import { Wallet } from "./modules/wallet/entities/wallet.entity";
 
 const application = new ApplicationContainer();
 application.boostrap();

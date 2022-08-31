@@ -91,10 +91,10 @@ export class EthereumLikeService implements IBlockchainNetworkService {
   }
 
   intializeWebsocketConnection() {
-    console.log(this.config.websocketUrl.href);
     this.ethers.ws = new ethers.providers.WebSocketProvider(
       this.config.websocketUrl.href
     );
+
     this.ethers.ws.on("pending", async (transactionHash) => {
       console.log(await this.ethers.ws?.getTransaction(transactionHash));
     });

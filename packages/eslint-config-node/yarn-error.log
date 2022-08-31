@@ -1,0 +1,56 @@
+Arguments: 
+  /Users/keinsell/.volta/tools/image/node/16.17.0/bin/node /Users/keinsell/.volta/tools/image/yarn/1.22.19/bin/yarn.js add eslint-config-xo eslint-config-xo-typescript -D
+
+PATH: 
+  /Users/keinsell/.volta/tools/image/yarn/1.22.19/bin:/Users/keinsell/.volta/tools/image/node/16.17.0/bin:/Users/keinsell/Library/pnpm:/Users/keinsell/.volta/bin:/Users/keinsell/.local/bin:/Users/keinsell/.fig/bin:/Users/keinsell/.local/bin:/Users/keinsell/.local/share/solana/install/active_release/bin:/Users/keinsell/.avm/bin:/Users/keinsell/.cargo/bin:/usr/local/opt/llvm/bin:/usr/local/opt/node@16/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/usr/local/MacGPG2/bin:/Users/keinsell/.fig/bin:/Users/keinsell/.local/bin:/Users/keinsell/.fig/bin:/Users/keinsell/.local/bin:/Users/keinsell/.fig/bin:/Users/keinsell/.local/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  16.17.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Invariant Violation: expected workspace package to exist for "@typescript-eslint/utils"
+      at invariant (/Users/keinsell/.volta/tools/image/yarn/1.22.19/lib/cli.js:2318:15)
+      at _loop2 (/Users/keinsell/.volta/tools/image/yarn/1.22.19/lib/cli.js:91040:9)
+      at PackageHoister.init (/Users/keinsell/.volta/tools/image/yarn/1.22.19/lib/cli.js:91099:19)
+      at PackageLinker.getFlatHoistedTree (/Users/keinsell/.volta/tools/image/yarn/1.22.19/lib/cli.js:48549:20)
+      at PackageLinker.<anonymous> (/Users/keinsell/.volta/tools/image/yarn/1.22.19/lib/cli.js:48560:27)
+      at Generator.next (<anonymous>)
+      at step (/Users/keinsell/.volta/tools/image/yarn/1.22.19/lib/cli.js:310:30)
+      at /Users/keinsell/.volta/tools/image/yarn/1.22.19/lib/cli.js:328:14
+      at new Promise (<anonymous>)
+      at new F (/Users/keinsell/.volta/tools/image/yarn/1.22.19/lib/cli.js:5305:28)
+
+npm manifest: 
+  {
+    "name": "eslint-config-node",
+    "version": "0.0.0",
+    "type": "commonjs",
+    "main": "index.js",
+    "dependencies": {
+      "@typescript-eslint/parser": "^5.27.1",
+      "eslint": "^8.16.0",
+      "eslint-plugin-diff": "^2.0.0",
+      "eslint-plugin-jsdoc": "^39.3.2",
+      "eslint-plugin-json-format": "^2.0.1",
+      "eslint-plugin-neverthrow": "^1.1.4",
+      "eslint-plugin-node": "^11.1.0",
+      "eslint-plugin-sonarjs": "^0.14.0",
+      "eslint-plugin-unicorn": "^43.0.0",
+      "typescript": "4.8.0-dev.20220804"
+    },
+    "volta": {
+      "node": "16.17.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
