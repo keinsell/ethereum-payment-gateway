@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  ganache:
+    container_name: etherbridge-ganache
+    image: trufflesuite/ganache:latest
+    entrypoint: node /app/dist/node/cli.js -b 10 -a 5 --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0 -m 'bacon hole season silly brave obscure arena another firm slide debris expand' --networkId 1337 --database.dbPath /ganache_data --fork.network rinkeby --fork.blockNumber 11261043
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./.cache/ganache:/ganache_data
