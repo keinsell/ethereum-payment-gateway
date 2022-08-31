@@ -6,7 +6,7 @@
   "dependencies": {
     "@typescript-eslint/parser": "^5.27.1",
     "eslint": "^8.16.0",
-    "eslint-config-xo": "^0.41.0",
+    "eslint-config-xo": "^0.42.0",
     "eslint-config-xo-typescript": "^0.52.0",
     "eslint-import-resolver-typescript": "^3.5.0",
     "eslint-plugin-diff": "^2.0.0",
