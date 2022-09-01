@@ -9,19 +9,16 @@ interface DomainError {
   error?: any;
 }
 
-// export class UnexpectedError extends DomainResult<never, DomainError> {
-//   public constructor(error?: any) {
-//     super(false, {
-//       message: "Unexpected error",
-//       timestamp: new Date(),
-//       error: error,
-//     });
-//   }
-
-//   public static from(error: any): UnexpectedError {
-//     return new UnexpectedError(error);
-//   }
-// }
+export class ExpectedDomainError implements DomainError {
+  timestamp: Date;
+  message: string;
+  error?: any;
+  constructor(message: string, error?: any, transaction?: any) {
+    this.message = message;
+    this.error = error;
+    this.timestamp = new Date();
+  }
+}
 
 export class UnexpectedError implements DomainError {
   message: string;

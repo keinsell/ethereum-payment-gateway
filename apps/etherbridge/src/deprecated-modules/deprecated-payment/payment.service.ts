@@ -5,19 +5,20 @@ import {
   eventStorage,
   KnownEvents,
 } from "../../infrastructure/event";
-import { PurchaseInitalizedEvent } from "../purchase/events/purchase-initalized.event";
-import { PurchaseOverpaidEvent } from "../purchase/events/purchase-overpaid.event";
-import { PurchaseStartedWaitingForPayment } from "../purchase/events/purchase-started-watch-for-payment.event";
-import { PurchaseUnderpaidEvent } from "../purchase/events/purchase-underpaid.event";
-import { getConfirmedBalanceOnRotationWalletToDate } from "../old-rotation-history/rotation-hisory.repository";
+import { BlockchainModule } from "../../modules/blockchain/blockchain.module";
+import { PurchaseInitalizedEvent } from "../../modules/purchase/events/purchase-initalized.event";
+import { PurchaseOverpaidEvent } from "../../modules/purchase/events/purchase-overpaid.event";
+import { PurchaseStartedWaitingForPayment } from "../../modules/purchase/events/purchase-started-watch-for-payment.event";
+import { PurchaseUnderpaidEvent } from "../../modules/purchase/events/purchase-underpaid.event";
+import { getConfirmedBalanceOnRotationWalletToDate } from "../deprecated-rotation-wallet-history/rotation-hisory.repository";
 import {
   findRotationWalletByAddress,
   releaseRotationWallet,
-} from "../old-rotation-wallet/rotation-wallet.repository";
+} from "../deprecated-wallet/rotation-wallet.repository";
 import {
   getOrGenerateFreeRotationWallet,
   payoutForWalletWithBiggestCapial,
-} from "../old-rotation-wallet/rotation-wallet.service";
+} from "../deprecated-wallet/rotation-wallet.service";
 import { PaymentCompletedEvent } from "./events/payment-completed.event";
 import { ConfirmedDeclarationPaymentEvent } from "./events/payment-confirmed.event";
 import { PaymentRecivedEvent } from "./events/payment-recived.event";
@@ -33,6 +34,12 @@ import {
 
 export async function initalizeNewPayment() {
   const availableRotationWallet = getOrGenerateFreeRotationWallet();
+
+  console.log(
+    await BlockchainModule.Services.Ethereum.getBalanceOfPublicKey(
+      availableRotationWallet.address
+    )
+  );
 
   const payment = createNewPayment({ wallet: availableRotationWallet });
 

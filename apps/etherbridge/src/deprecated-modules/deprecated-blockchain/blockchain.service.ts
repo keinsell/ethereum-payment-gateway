@@ -6,7 +6,7 @@ import {
   RPC_PROVIDER_URL,
   WEBSOCKET_PROVIDER_URL,
 } from "../../config/environment.config";
-import { TransactionPostedEvent } from "../old-rotation-wallet/events/transaction-posted.event";
+import { TransactionPostedEvent } from "../deprecated-wallet/events/transaction-posted.event";
 
 export interface IBlockchainService {}
 export interface IGenericBlockchainWallet {}

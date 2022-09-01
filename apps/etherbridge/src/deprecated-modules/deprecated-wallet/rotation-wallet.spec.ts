@@ -6,7 +6,7 @@ import sinon from "sinon";
 import {
   createWallet,
   getBalanceOfAddress,
-} from "../blockchain/blockchain.service";
+} from "../deprecated-blockchain/blockchain.service";
 import { createRotationWalletFromAccount } from "./rotation-wallet.repository";
 
 sinon.stub(console);

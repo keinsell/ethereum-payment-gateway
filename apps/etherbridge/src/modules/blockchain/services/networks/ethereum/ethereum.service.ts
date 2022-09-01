@@ -25,9 +25,6 @@ import { IBlockchainNetworkService } from "../blockchain-network.service";
 
 /** EthereumNetworkService stands for bare implementation of most EVM-based networks such as Polygon. */
 export class EthereumNetworkService implements IBlockchainNetworkService {
-  /** Generic property which represents name of connected network. */
-  private networkName: string;
-
   /** Object with websocket and rpc connection on Web3 interface. */
   private web3: {
     ws: Web3;
@@ -45,13 +42,12 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
     toWeb3: Web3Mapper;
   };
 
-  private config: BlockchainServiceConfiguration;
-
   /** Signer account used as administrator account, it's used as default for some methods like signTransaction where we can skip adding privateKey. */
   private signer: ethers.Signer | undefined;
 
+  network: string;
+
   constructor(networkName: string, config: BlockchainServiceConfiguration) {
-    this.config = config;
     this.network = networkName;
 
     // Initalize connections for web3
@@ -80,47 +76,13 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
       this.signer = new ethers.Wallet(config.signerPrivateKey);
     }
 
-    this.networkName = networkName;
+    this.network = networkName;
 
     // Attach Mappers
     this.mapper = {
       toEthers: new EthersMapper(),
       toWeb3: new Web3Mapper(),
     };
-
-    this.intializeWebsocketConnection();
-  }
-  network: string;
-
-  intializeWebsocketConnection() {
-    this.ethers.ws = new ethers.providers.WebSocketProvider(
-      this.config.websocketUrl.href
-    );
-
-    this.ethers.ws.on("pending", async (transactionHash) => {
-      console.log(await this.ethers.ws?.getTransaction(transactionHash));
-    });
-
-    this.ethers.ws._websocket.on("open", () => {
-      new ConnectedWebsocketEvent(this.networkName, this.config.websocketUrl);
-    });
-
-    this.ethers.ws._websocket.on("error", (error: any) => {
-      console.log("Error...");
-      setTimeout(this.intializeWebsocketConnection, ms("3s"));
-    });
-
-    this.ethers.ws._websocket.on("close", async (code: number) => {
-      console.log(
-        `Connection lost with code ${code}! Attempting reconnect in 3s...`
-      );
-
-      if (this.ethers.ws) {
-        this.ethers.ws._websocket.terminate();
-      }
-
-      setTimeout(this.intializeWebsocketConnection, ms("3s"));
-    });
   }
 
   /** Create new blockchain wallet. */
@@ -128,7 +90,7 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
     // Create new wallet
     const createdWallet = this.web3.rpc.eth.accounts.create();
     // Log event of created wallet
-    new WalletGeneratedEvent(this.networkName, {
+    new WalletGeneratedEvent(this.network, {
       publicKey: createdWallet.address,
       privateKey: createdWallet.privateKey,
     });

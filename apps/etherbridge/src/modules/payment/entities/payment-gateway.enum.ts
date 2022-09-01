@@ -1,5 +1,5 @@
 export enum PaymentType {}
 export enum PaymentGateway {
-  cryptocurrency = "cryptocurrency",
+  internal = "internal",
   creditCard = "credit-card",
 }

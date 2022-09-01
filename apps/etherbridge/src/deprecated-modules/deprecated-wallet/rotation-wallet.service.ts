@@ -10,16 +10,13 @@ import {
   signTransaction,
   steamActualBlock,
   streamPendingTransactions,
-} from "../blockchain/blockchain.service";
+} from "../deprecated-blockchain/blockchain.service";
 import { DomesticEvent } from "../../infrastructure/event";
-import {
-  accountBalanceChangeOnRotationWallet,
-  confirmBalanceChangesAfterBlock,
-} from "../old-rotation-history/rotation-hisory.repository";
+
 import { toBig, toWei, toWeiFromEther } from "../../utilities/decimals.util";
 import { FundsWithdrawn } from "./events/funds-withdrawed.event";
 import { FoundPendingTransactionEvent } from "./events/pending-transaction-found.event";
-import { TransactionPostedEvent } from "./events/transaction-posted.event";
+
 import {
   createRotationWalletFromAccount,
   findAvailableRotationWallet,
@@ -29,6 +26,10 @@ import {
   markRotationWalletAsBusy,
   updateRotationWallet,
 } from "./rotation-wallet.repository";
+import {
+  accountBalanceChangeOnRotationWallet,
+  confirmBalanceChangesAfterBlock,
+} from "../deprecated-rotation-wallet-history/rotation-hisory.repository";
 
 export function getOrGenerateFreeRotationWallet() {
   let wallet: IRotationWallet | undefined = findAvailableRotationWallet();
