@@ -1,4 +1,4 @@
-import { IBlockchainNetworkService } from "../blockchain/services/networks/blockchain-network.impl";
+import { IBlockchainNetworkService } from "../blockchain/services/networks/blockchain-network.service";
 import { Wallet } from "./entities/wallet.entity";
 import { IWalletRepository } from "./repositories/wallet.repository.impl";
 
@@ -32,7 +32,7 @@ export class WalletService {
       wallet.publicKey
     );
 
-    wallet.balance = balance;
+    wallet.balance = balance.toString();
 
     await this.repository.save(wallet);
 

@@ -1,24 +1,24 @@
-import { BigNumber } from "ethers";
+import { BigNumber, BigNumberish } from "ethers";
 import { Entity } from "../../../commons/entity/entity.impl";
 import {
-  PrivateKey,
-  PublicKey,
+  IPublicKey,
+  IPrivateKey,
 } from "../../blockchain/value-objects/wallet.blockchain.vo";
 import { HistoricalVaultProperites } from "../../history/entities/historical-balance.entity";
 
 // TODO: Add network prop to Wallet
 export interface WalletProperties {
-  publicKey: PublicKey;
-  privateKey: PrivateKey;
-  balance?: BigNumber;
+  publicKey: IPublicKey;
+  privateKey: IPrivateKey;
+  balance?: BigNumberish;
   isBusy: boolean;
   historicalData?: HistoricalVaultProperites[];
 }
 
 export class Wallet extends Entity implements WalletProperties {
-  publicKey: PublicKey;
-  privateKey: PrivateKey;
-  balance: BigNumber;
+  publicKey: IPublicKey;
+  privateKey: IPrivateKey;
+  balance: BigNumberish;
   isBusy: boolean;
   historicalData?: HistoricalVaultProperites[];
 

@@ -1,9 +1,9 @@
-import { PrivateKey } from "../modules/blockchain/value-objects/wallet.blockchain.vo";
+import { IPrivateKey } from "../modules/blockchain/value-objects/wallet.blockchain.vo";
 
 export type BlockchainServiceConfiguration = {
   websocketUrl: URL;
   rpcUrl: URL;
-  signerPrivateKey?: PrivateKey;
+  signerPrivateKey?: IPrivateKey;
   /** Provided mnemonic phase is used for building HD Wallets. */
   mnemonic?: string;
   /** Configuration of blockchain explorer to quickly preview made transactions, used mostly for events and developer-usability. */
