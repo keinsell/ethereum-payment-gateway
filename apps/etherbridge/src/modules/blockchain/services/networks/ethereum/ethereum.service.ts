@@ -1,9 +1,7 @@
 import { BigNumber, ethers } from "ethers";
-import ms from "ms";
 import Web3 from "web3";
 import { BlockchainServiceConfiguration } from "../../../../../config/blockchain.config";
 import { WalletGeneratedEvent } from "../../../events/wallet-generated.event";
-import { ConnectedWebsocketEvent } from "../../../events/websocket-connection/connected-websocket.event";
 import { EthersMapper } from "../../../mappers/ethers.mapper";
 import { Web3Mapper } from "../../../mappers/web3.mapper";
 import { IProviderFee } from "../../../value-objects/fee-information.vo";

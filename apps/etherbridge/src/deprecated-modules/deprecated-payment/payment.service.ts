@@ -35,12 +35,6 @@ import {
 export async function initalizeNewPayment() {
   const availableRotationWallet = getOrGenerateFreeRotationWallet();
 
-  console.log(
-    await BlockchainModule.Services.Ethereum.getBalanceOfPublicKey(
-      availableRotationWallet.address
-    )
-  );
-
   const payment = createNewPayment({ wallet: availableRotationWallet });
 
   new PurchaseInitalizedEvent(payment);
