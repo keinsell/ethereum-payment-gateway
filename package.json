@@ -47,7 +47,7 @@
   },
   "volta": {
     "node": "18.3.0",
-    "yarn": "1.18.0"
+    "yarn": "1.22.19"
   },
   "prisma": {
     "schema": "packages/prepacked-prisma/prisma/schema.prisma",
