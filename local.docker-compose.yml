@@ -7,4 +7,18 @@ services:
     ports:
       - "8545:8545"
     volumes:
-      - ./.cache/ganache:/ganache_data
+      - "${PWD}/.cache/ganache_data:/ganache_data"
+
+  cockroachdb:
+    container_name: etherbridge-cockroachdb
+    image: cockroachdb/cockroach:latest
+    command: start-single-node --insecure --advertise-addr ${DATABASE_HOST}
+    ports:
+      - "${DATABASE_PORT}:26257"
+      - "8080:8080"
+    volumes:
+      - "${PWD}/.cache/cockroach:/cockroach/cockroach-data"
+    environment:
+      - COCKROACH_USER=${DATABASE_USER}
+      - COCKROACH_PASSWORD=${DATABASE_PASSWORD}
+      - COCKROACH_DATABASE=${DATABASE_NAME}

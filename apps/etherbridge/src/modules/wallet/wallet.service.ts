@@ -1,6 +1,6 @@
 import { IBlockchainNetworkService } from "../blockchain/services/networks/blockchain-network.service";
 import { Wallet } from "./entities/wallet.entity";
-import { IWalletRepository } from "./repositories/wallet.repository.impl";
+import { IWalletRepository } from "./repositories/wallet.repository";
 
 // TODO: Think about multiple ERC-20 contracts for example, how to synchronize them with wallet.
 

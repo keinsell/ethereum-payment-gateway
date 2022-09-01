@@ -1,5 +1,5 @@
 {
-  "name": "async-blockchain-interaction",
+  "name": "ethergate",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,6 +11,7 @@
     "build": "turbo run build",
     "db:migrate:deploy": "turbo run db:migrate:deploy",
     "db:push": "turbo run db:push",
+    "db:push:force": "turbo run db:push:force",
     "db:seed": "turbo run db:seed",
     "dev": "turbo run dev --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -46,10 +47,10 @@
   },
   "volta": {
     "node": "18.3.0",
-    "yarn": "1.22.19"
+    "yarn": "1.18.0"
   },
   "prisma": {
-    "schema": "packages/database/prisma/schema.prisma",
-    "seed": "tsx packages/database/src/seed.ts"
+    "schema": "packages/prepacked-prisma/prisma/schema.prisma",
+    "seed": "tsx packages/prepacked-prisma/src/seed.ts"
   }
 }
