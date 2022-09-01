@@ -2,10 +2,11 @@ import { GANACHE_BLOCKCHAIN_CONFIG } from "../../config/blockchain.config";
 import { EthereumNetworkService } from "./services/networks/ethereum/ethereum.service";
 
 export namespace BlockchainModule {
-  export namespace ValueObjects {}
-  export namespace Services {
-    export const Ethereum = new EthereumNetworkService(
-      "ethereum",
+  export const service = services.ganache;
+
+  export namespace services {
+    export const ganache = new EthereumNetworkService(
+      "ganache",
       GANACHE_BLOCKCHAIN_CONFIG
     );
   }

@@ -3,13 +3,16 @@ import { WalletRepository } from "./repositories/wallet.repository";
 import { WalletService } from "./wallet.service";
 
 export namespace WalletModule {
-  export namespace Repositories {
-    export const Prisma = new WalletRepository();
+  export const repository = new WalletRepository();
+
+  export const service = new WalletService(
+    BlockchainModule.service,
+    repository
+  );
+
+  export namespace services {
+    export const main = service;
   }
-  export namespace Services {
-    export const Main = new WalletService(
-      BlockchainModule.Services.Ethereum,
-      Repositories.Prisma
-    );
-  }
+
+  export namespace repositories {}
 }
