@@ -7,12 +7,12 @@ services:
     ports:
       - "8545:8545"
     volumes:
-      - "${PWD}/.cache/cockroach:/ganache_data"
+      - "${PWD}/.cache/ganache_data:/ganache_data"
 
   cockroachdb:
     container_name: etherbridge-cockroachdb
     image: cockroachdb/cockroach:latest
-    command: start-single-node --insecure --advertise-addr ${DATABASE_HOST} --listen-addr=${DATABASE_HOST}:${DATABASE_PORT}
+    command: start-single-node --insecure --advertise-addr ${DATABASE_HOST}
     ports:
       - "${DATABASE_PORT}:26257"
       - "8080:8080"
