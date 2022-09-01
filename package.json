@@ -11,6 +11,7 @@
     "build": "turbo run build",
     "db:migrate:deploy": "turbo run db:migrate:deploy",
     "db:push": "turbo run db:push",
+    "db:push:force": "turbo run db:push:force",
     "db:seed": "turbo run db:seed",
     "dev": "turbo run dev --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -46,7 +47,7 @@
   },
   "volta": {
     "node": "18.3.0",
-    "yarn": "1.22.19"
+    "yarn": "1.18.0"
   },
   "prisma": {
     "schema": "packages/prepacked-prisma/prisma/schema.prisma",

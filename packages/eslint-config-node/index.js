@@ -1,8 +1,6 @@
 module.exports = {
   extends: [
     "plugin:diff/diff",
-    "xo",
-    "xo-typescript",
     "eslint:recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",

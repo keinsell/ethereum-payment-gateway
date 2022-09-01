@@ -4,6 +4,9 @@ import {
   watchPayment,
 } from "./deprecated-modules/deprecated-payment/payment.service";
 import { BlockchainModule } from "./modules/blockchain/blockchain.module";
+import { PrismaConnectionInstance } from "./infrastructure/prisma/prisma.infra";
+import { WalletModule } from "./modules/wallet/wallet.module";
+import { env } from "process";
 
 const application = new ApplicationContainer();
 application.boostrap();
@@ -11,6 +14,6 @@ application.boostrap();
 const payment = await initalizeNewPayment();
 await watchPayment(payment);
 
-const e = BlockchainModule.Services.Ethereum;
+const w = WalletModule.Services.Main;
 
-e.createWallet();
+await w.generateWallet();

@@ -12,13 +12,27 @@ generator client {
 }
 
 model User {
-  id            Int       @id @default(sequence())
+  id            String       @id @default(cuid())
   firstName     String?
   lastName      String?
   username      String?   @unique
   email         String?   @unique
   password      String
   age          Int?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now())
+  createdAt     DateTime?  @default(now())
+  updatedAt     DateTime?  @default(now())
+}
+
+model Wallet {
+  id            String    @id @default(cuid())
+  
+  publicKey     String 
+  privateKey String
+
+  isBusy Boolean @default(false)
+  
+  balance       BigInt    @default(0)
+
+  createdAt     DateTime?  @default(now())
+  updatedAt     DateTime?  @default(now())
 }
