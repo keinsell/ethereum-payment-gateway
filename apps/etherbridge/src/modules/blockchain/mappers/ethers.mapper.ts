@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
-import { TransactionRequest } from "../value-objects/transaction-request.vo";
+import { ITransactionRequest } from "../value-objects/transaction-request.vo";
 
 export class EthersMapper {
   transactionRequest(
-    transactionRequest: TransactionRequest
+    transactionRequest: ITransactionRequest
   ): ethers.providers.TransactionRequest {
     return {
       ...transactionRequest,

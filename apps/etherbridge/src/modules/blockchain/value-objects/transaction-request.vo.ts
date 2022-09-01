@@ -1,6 +1,6 @@
 import { BigNumberish, Bytes, BytesLike, ethers } from "ethers";
 
-export interface TransactionRequest {
+export interface ITransactionRequest {
   to?: string;
   from?: string;
   nonce?: BigNumberish;

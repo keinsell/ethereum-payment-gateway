@@ -1,9 +1,7 @@
-import { BigNumber } from "ethers";
+export type IPublicKey = string;
+export type IPrivateKey = string;
 
-export type PublicKey = string;
-export type PrivateKey = string;
-
-export interface WalletProperties {
-  publicKey: PublicKey;
-  privateKey: PrivateKey;
+export interface IWallet {
+  publicKey: IPublicKey;
+  privateKey: IPrivateKey;
 }

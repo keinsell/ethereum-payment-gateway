@@ -1,1 +1,1 @@
-export type SignedTransaction = string;
+export type ISignedTransaction = string;

@@ -1,7 +1,7 @@
-import { TransactionReceipt } from "./transaction-receipt.vo";
-import { Transaction } from "./transaction.vo";
+import { ITransactionReceipt } from "./transaction-receipt.vo";
+import { ITransaction } from "./transaction.vo";
 
-export interface TransactionResponse extends Transaction {
+export interface ITransactionResponse extends ITransaction {
   hash: string;
 
   // Only if a transaction has been mined
@@ -18,5 +18,5 @@ export interface TransactionResponse extends Transaction {
   raw?: string;
 
   // This function waits until the transaction has been mined
-  wait: (confirmations?: number) => Promise<TransactionReceipt>;
+  wait: (confirmations?: number) => Promise<ITransactionReceipt>;
 }

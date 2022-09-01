@@ -1,6 +1,6 @@
-import { BigNumber, ContractTransaction } from "ethers";
+import { BigNumber } from "ethers";
 
-export interface TransactionReceipt {
+export interface ITransactionReceipt {
   to: string;
   from: string;
   contractAddress: string;

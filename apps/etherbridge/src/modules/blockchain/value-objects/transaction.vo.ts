@@ -1,7 +1,6 @@
 import { BigNumber } from "ethers";
-import { AccessList } from "ethers/lib/utils";
 
-export interface Transaction {
+export interface ITransaction {
   hash?: string;
 
   to?: string;

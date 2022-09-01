@@ -1,30 +1,30 @@
 import { BigNumber, ethers } from "ethers";
-import Web3 from "web3";
-import {
-  PrivateKey,
-  PublicKey,
-  WalletProperties,
-} from "../../value-objects/wallet.blockchain.vo";
-import { EthersMapper } from "../../mappers/ethers.mapper";
-import { Web3Mapper } from "../../mappers/web3.mapper";
-import { TransactionRequest } from "../../value-objects/transaction-request.vo";
-import { BlockchainServiceConfiguration } from "../../../../config/blockchain.config";
-import { WalletGeneratedEvent } from "../../events/wallet-generated.event";
-import { IBlockchainNetworkService } from "./blockchain-network.impl";
-import { SignedTransaction } from "../../value-objects/singed-transaction.vo";
-import { TransactionResponse } from "../../value-objects/transaction-response.vo";
-import { ProviderFee } from "../../value-objects/fee-information.vo";
-import { TransactionFee } from "../../value-objects/transaction-fee.vo";
 import ms from "ms";
-import { ConnectedWebsocketEvent } from "../../events/websocket-connection/connected-websocket.event";
+import Web3 from "web3";
+import { BlockchainServiceConfiguration } from "../../../../../config/blockchain.config";
+import { WalletGeneratedEvent } from "../../../events/wallet-generated.event";
+import { ConnectedWebsocketEvent } from "../../../events/websocket-connection/connected-websocket.event";
+import { EthersMapper } from "../../../mappers/ethers.mapper";
+import { Web3Mapper } from "../../../mappers/web3.mapper";
+import { IProviderFee } from "../../../value-objects/fee-information.vo";
+import { ISignedTransaction } from "../../../value-objects/singed-transaction.vo";
+import { ITransactionFee } from "../../../value-objects/transaction-fee.vo";
+import { ITransactionRequest } from "../../../value-objects/transaction-request.vo";
+import { ITransactionResponse } from "../../../value-objects/transaction-response.vo";
+import {
+  IPrivateKey,
+  IPublicKey,
+  IWallet,
+} from "../../../value-objects/wallet.blockchain.vo";
+import { IBlockchainNetworkService } from "../blockchain-network.service";
 
 // TODO: Add mnemonic to constructor for HDWallet management
 // TODO: Add keepAlive to websocket connection
 // TODO: Think how to expose pending transactions and how to filter them to other services, that would be useful in maintaining stable architecture.
 // https://github.com/ethers-io/ethers.js/issues/1053#issuecomment-808736570
 
-/** EvmService is universal class that can be used for Ethereum-like networks. */
-export class EthereumLikeService implements IBlockchainNetworkService {
+/** EthereumNetworkService stands for bare implementation of most EVM-based networks such as Polygon. */
+export class EthereumNetworkService implements IBlockchainNetworkService {
   /** Generic property which represents name of connected network. */
   private networkName: string;
 
@@ -52,6 +52,7 @@ export class EthereumLikeService implements IBlockchainNetworkService {
 
   constructor(networkName: string, config: BlockchainServiceConfiguration) {
     this.config = config;
+    this.network = networkName;
 
     // Initalize connections for web3
     this.web3 = {
@@ -89,6 +90,7 @@ export class EthereumLikeService implements IBlockchainNetworkService {
 
     this.intializeWebsocketConnection();
   }
+  network: string;
 
   intializeWebsocketConnection() {
     this.ethers.ws = new ethers.providers.WebSocketProvider(
@@ -122,7 +124,7 @@ export class EthereumLikeService implements IBlockchainNetworkService {
   }
 
   /** Create new blockchain wallet. */
-  createWallet(): WalletProperties {
+  createWallet(): IWallet {
     // Create new wallet
     const createdWallet = this.web3.rpc.eth.accounts.create();
     // Log event of created wallet
@@ -139,8 +141,8 @@ export class EthereumLikeService implements IBlockchainNetworkService {
 
   /** Sign transaction with provided private key of wallet. */
   async signTransactionWithPrivateKey(
-    transaction: TransactionRequest,
-    privateKey: PrivateKey
+    transaction: ITransactionRequest,
+    privateKey: IPrivateKey
   ) {
     // Prepare wallet for signing transaction
     const signer = new ethers.Wallet(privateKey);
@@ -155,7 +157,7 @@ export class EthereumLikeService implements IBlockchainNetworkService {
   }
 
   async signTransaction(
-    transactionRequest: TransactionRequest
+    transactionRequest: ITransactionRequest
   ): Promise<string> {
     // Sign transaction with signer account
     return await this.signer!.signTransaction(
@@ -167,19 +169,21 @@ export class EthereumLikeService implements IBlockchainNetworkService {
     return await this.web3.rpc.eth.getBlockNumber();
   }
 
-  async getBalanceOfPublicKey(publicKey: PublicKey): Promise<ethers.BigNumber> {
+  async getBalanceOfPublicKey(
+    publicKey: IPublicKey
+  ): Promise<ethers.BigNumber> {
     const balance = await this.ethers.rpc.getBalance(publicKey);
     return balance;
   }
 
-  async getNonceOfPublicKey(publicKey: PublicKey): Promise<number> {
+  async getNonceOfPublicKey(publicKey: IPublicKey): Promise<number> {
     const nonce = await this.ethers.rpc.getTransactionCount(publicKey);
     return nonce;
   }
 
   async sendSignedTransaction(
-    signedTransaction: SignedTransaction
-  ): Promise<TransactionResponse> {
+    signedTransaction: ISignedTransaction
+  ): Promise<ITransactionResponse> {
     const transaction = await this.ethers.rpc.sendTransaction(
       signedTransaction
     );
@@ -189,7 +193,7 @@ export class EthereumLikeService implements IBlockchainNetworkService {
 
   async getFeeInformation(
     priority: "normal" | "high" = "normal"
-  ): Promise<ProviderFee> {
+  ): Promise<IProviderFee> {
     const gasPrice = await this.ethers.rpc.getGasPrice();
     const feeData = await this.ethers.rpc.getFeeData();
 
@@ -205,9 +209,9 @@ export class EthereumLikeService implements IBlockchainNetworkService {
   }
 
   async estimateTransactionFee(
-    transactionRequest: TransactionRequest,
-    fees: ProviderFee
-  ): Promise<TransactionFee> {
+    transactionRequest: ITransactionRequest,
+    fees: IProviderFee
+  ): Promise<ITransactionFee> {
     const gasLimit = await this.ethers.rpc.estimateGas(
       this.mapper.toEthers.transactionRequest(transactionRequest)
     );
