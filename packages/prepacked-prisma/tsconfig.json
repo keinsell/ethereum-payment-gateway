@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ESNext", "ScriptHost", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "target": "ESNext"
+  },
+  "include": ["**/*.ts", "tsup.config.ts"],
+  "exclude": ["node_modules"]
+}
