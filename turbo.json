@@ -25,9 +25,11 @@
       "outputs": []
     },
     "db:push": {
+      "cache": false,
       "outputs": []
     },
     "db:push:force": {
+      "cache": false,
       "outputs": []
     },
     "db:seed": {

@@ -3,12 +3,22 @@ services:
   ganache:
     container_name: etherbridge-ganache
     image: trufflesuite/ganache:latest
-    entrypoint: node /app/dist/node/cli.js -b 10 -a 5 --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0 -m 'bacon hole season silly brave obscure arena another firm slide debris expand' --networkId 1337 --database.dbPath /ganache_data --fork.network rinkeby --fork.blockNumber 11261043
+    entrypoint: node /app/dist/node/cli.js -b 10 -a 5 --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0 -m 'bacon hole season silly brave obscure arena another firm slide debris expand' --networkId 1337 --database.dbPath /ganache_data
+    # When there is need to fork actual network
+    #  --fork.network rinkeby --fork.blockNumber 11261043
     ports:
       - "8545:8545"
     volumes:
       - "${PWD}/.cache/ganache_data:/ganache_data"
 
+  explorer:
+    container_name: etherbridge-explorer
+    image: alethio/ethereum-lite-explorer
+    ports:
+      - "3040:80"
+    environment:
+      - APP_NODE_URL=http://localhost:8545
+      - APP_BASE_URL=localhost
   cockroachdb:
     container_name: etherbridge-cockroachdb
     image: cockroachdb/cockroach:latest
