@@ -3,22 +3,27 @@ services:
   ganache:
     container_name: etherbridge-ganache
     image: trufflesuite/ganache:latest
-    entrypoint: node /app/dist/node/cli.js -b 10 -a 5 --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0 -m 'bacon hole season silly brave obscure arena another firm slide debris expand' --networkId 1337 --database.dbPath /ganache_data
+    entrypoint: node /app/dist/node/cli.js -b ${GANACHE_BLOCKTIME} -a 5 --miner.coinbase 0x0E5079117F05C717CF0fEC43ff5C77156395F6E0 -m '${ETHEREUM_MNEMONIC}' --networkId ${GANACHE_NETWORKID} --database.dbPath /ganache_data
     # When there is need to fork actual network
     #  --fork.network rinkeby --fork.blockNumber 11261043
     ports:
-      - "8545:8545"
+      - "${GANACHE_PORT}:8545"
     volumes:
       - "${PWD}/.cache/ganache_data:/ganache_data"
 
   explorer:
     container_name: etherbridge-explorer
+    depends_on:
+      - memento
     image: alethio/ethereum-lite-explorer
     ports:
       - "3040:80"
     environment:
-      - APP_NODE_URL=http://localhost:8545
-      - APP_BASE_URL=localhost
+      - APP_NODE_URL=http://localhost:${GANACHE_PORT}
+      - APP_BASE_URL=http://localhost:3040
+    volumes:
+      - "${PWD}/.volumes/explorer/config.json:/usr/share/nginx/html/config.json"
+
   cockroachdb:
     container_name: etherbridge-cockroachdb
     image: cockroachdb/cockroach:latest
@@ -32,3 +37,34 @@ services:
       - COCKROACH_USER=${DATABASE_USER}
       - COCKROACH_PASSWORD=${DATABASE_PASSWORD}
       - COCKROACH_DATABASE=${DATABASE_NAME}
+
+  redis:
+    container_name: etherbridge-redis
+    image: redis:5.0.5-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - ${PWD}/.cache/redis:/data
+  postgres:
+    container_name: etherbridge-postgres
+    image: postgres:11.5-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_DB=memento
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - ${PWD}/.cache/postgresql:/var/lib/postgresql/data
+  memento:
+    container_name: etherbridge-memento
+    image: alethio/memento:latest
+    depends_on:
+      - redis
+      - postgres
+    ports:
+      - 3001:3001
+      - 3000:3000
+    environment:
+      - PG_PASSWORD=${DATABASE_PASSWORD}
+      - PG_USER=${DATABASE_USER}
+    volumes:
+      - ${PWD}/.volumes/memento:/config
