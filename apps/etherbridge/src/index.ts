@@ -14,6 +14,6 @@ application.boostrap();
 const payment = await initalizeNewPayment();
 await watchPayment(payment);
 
-const w = WalletModule.Services.Main;
+const w = WalletModule.service;
 
 await w.generateWallet();
