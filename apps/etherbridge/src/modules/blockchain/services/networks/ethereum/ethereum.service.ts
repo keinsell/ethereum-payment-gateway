@@ -99,6 +99,41 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
     };
   }
 
+  async createTransaction(
+    transactionRequest: ITransactionRequest
+  ): Promise<ITransactionRequest> {
+    // 1. Get provider fee information
+    const providerFee = await this.getFeeInformation();
+    // 2. Attach fee according to transaction type
+    let transactionType = transactionRequest.type;
+
+    if (!transactionType) {
+      if (providerFee.maxFeePerGas && providerFee.maxFeePerGas) {
+        transactionType = 2;
+      } else {
+        transactionType = 0;
+      }
+    }
+
+    transactionRequest = { ...providerFee, ...transactionRequest };
+
+    // 3. Estimate transaction fee and attach it to transaction request
+    const transactionFee = await this.estimateTransactionFee(
+      transactionRequest,
+      providerFee
+    );
+
+    transactionRequest = {
+      gasLimit: transactionFee.gasLimit,
+      ...transactionRequest,
+    };
+
+    console.log(transactionRequest);
+
+    // 4. Return transaction request with fee attached
+    return transactionRequest;
+  }
+
   /** Sign transaction with provided private key of wallet. */
   async signTransactionWithPrivateKey(
     transaction: ITransactionRequest,

@@ -18,6 +18,11 @@ export interface IBlockchainNetworkService {
   network: string;
   createWallet(): IWallet;
 
+  /** Create transaction request with included fee configuration. */
+  createTransaction(
+    transactionRequest: ITransactionRequest
+  ): Promise<ITransactionRequest>;
+
   /** Sign transaction with privateKey attached to class. */
   signTransaction(
     transactionRequest: ITransactionRequest
