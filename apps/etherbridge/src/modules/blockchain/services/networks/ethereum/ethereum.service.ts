@@ -1,5 +1,5 @@
+import Big from "big.js";
 import { BigNumber, ethers } from "ethers";
-import Web3 from "web3";
 import { BlockchainServiceConfiguration } from "../../../../../config/blockchain.config";
 import { WalletGeneratedEvent } from "../../../events/wallet-generated.event";
 import { EthersMapper } from "../../../mappers/ethers.mapper";
@@ -23,12 +23,6 @@ import { IBlockchainNetworkService } from "../blockchain-network.service";
 
 /** EthereumNetworkService stands for bare implementation of most EVM-based networks such as Polygon. */
 export class EthereumNetworkService implements IBlockchainNetworkService {
-  /** Object with websocket and rpc connection on Web3 interface. */
-  private web3: {
-    ws: Web3;
-    rpc: Web3;
-  };
-
   /** Object with websocket and rpc connection on ethers interface. */
   private ethers: {
     ws?: ethers.providers.WebSocketProvider;
@@ -47,18 +41,6 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
 
   constructor(networkName: string, config: BlockchainServiceConfiguration) {
     this.network = networkName;
-
-    // Initalize connections for web3
-    this.web3 = {
-      ws: new Web3(
-        new Web3.providers.WebsocketProvider(config.websocketUrl.href)
-      ),
-      rpc: new Web3(new Web3.providers.HttpProvider(config.rpcUrl.href)),
-    };
-
-    if (!(this.web3.ws && this.web3.rpc)) {
-      throw new Error("Web3 is not initialized");
-    }
 
     // Initalize connections for ethers
     this.ethers = {
@@ -86,7 +68,7 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
   /** Create new blockchain wallet. */
   createWallet(): IWallet {
     // Create new wallet
-    const createdWallet = this.web3.rpc.eth.accounts.create();
+    const createdWallet = ethers.Wallet.createRandom();
     // Log event of created wallet
     new WalletGeneratedEvent(this.network, {
       publicKey: createdWallet.address,
@@ -100,35 +82,21 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
   }
 
   async createTransaction(
-    transactionRequest: ITransactionRequest
+    transactionRequest: ITransactionRequest,
   ): Promise<ITransactionRequest> {
+    let tx = { ...transactionRequest };
     // 1. Get provider fee information
     const providerFee = await this.getFeeInformation();
     // 2. Attach fee according to transaction type
-    let transactionType = transactionRequest.type;
+    const transactionFee = await this.estimateTransactionFee(tx, providerFee);
 
-    if (!transactionType) {
-      if (providerFee.maxFeePerGas && providerFee.maxFeePerGas) {
-        transactionType = 2;
-      } else {
-        transactionType = 0;
-      }
-    }
-
-    transactionRequest = { ...providerFee, ...transactionRequest };
-
-    // 3. Estimate transaction fee and attach it to transaction request
-    const transactionFee = await this.estimateTransactionFee(
-      transactionRequest,
-      providerFee
-    );
-
+    // 3. Attach fee to transaction
     transactionRequest = {
+      gasPrice:
+        transactionFee.gasPrice ?? ethers.utils.parseUnits("40", "gwei"),
       gasLimit: transactionFee.gasLimit,
       ...transactionRequest,
     };
-
-    console.log(transactionRequest);
 
     // 4. Return transaction request with fee attached
     return transactionRequest;
@@ -161,7 +129,7 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
   }
 
   async getBlockNumber(): Promise<number> {
-    return await this.web3.rpc.eth.getBlockNumber();
+    return await this.ethers.rpc.getBlockNumber();
   }
 
   async getBalanceOfPublicKey(
