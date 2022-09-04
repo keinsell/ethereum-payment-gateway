@@ -8,7 +8,7 @@ export class WalletGeneratedEvent extends BaseEvent<{
   wallet: IWallet;
 }> {
   constructor(network: string, wallet: IWallet) {
-    super("generated-wallet", { network, wallet }, "debug");
+    super(`GENERATED_${network.toUpperCase()}_WALLET`, { network, wallet }, "debug");
   }
 
   override toConsole(): void {

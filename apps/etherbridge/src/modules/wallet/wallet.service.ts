@@ -29,6 +29,16 @@ export class WalletService {
     return savedWallet;
   }
 
+  public async getFreeWallet(): Promise<Wallet> {
+    const freeWallet = await this.repository.findUnusedWallet();
+
+    if (!freeWallet) {
+      return this.generateWallet();
+    }
+
+    return freeWallet;
+  }
+
   public async synchronizeWalletBalance(wallet: Wallet): Promise<Wallet> {
     const balance = await this.networkService.getBalanceOfPublicKey(
       wallet.publicKey

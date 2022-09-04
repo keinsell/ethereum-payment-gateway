@@ -5,6 +5,7 @@ import { PrismaWalletMapper } from "../mappers/wallet.mapper";
 
 export interface IWalletRepository extends IRepository<Wallet> {
   createWallet(properties: WalletProperties): Promise<Wallet>;
+  findUnusedWallet(): Promise<Wallet | undefined>;
 }
 
 export class WalletRepository implements IWalletRepository {
@@ -60,5 +61,19 @@ export class WalletRepository implements IWalletRepository {
   async createWallet(properties: WalletProperties): Promise<Wallet> {
     const wallet = new Wallet(properties);
     return this.save(wallet);
+  }
+
+  async findUnusedWallet(): Promise<Wallet | undefined> {
+    const wallet = await this.db.findFirst({
+      where: {
+        isBusy: false,
+      },
+    });
+
+    if (!wallet) {
+      return;
+    }
+
+    return this.mapper.toDomain(wallet);
   }
 }

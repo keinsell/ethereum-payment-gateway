@@ -18,6 +18,8 @@ const b = BlockchainModule.service;
 
 await w.generateWallet();
 
+console.log(await w.getFreeWallet());
+
 const transaction = await b.createTransaction({
   to: "0x217B1397Da76883d6a8C8b9dF4588D0B69365934",
   value: 1000000000000,

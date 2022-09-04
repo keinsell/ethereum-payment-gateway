@@ -8,7 +8,7 @@ declare global {
 export const prisma = global.prisma || new PrismaClient();
 
 export { PrismaClient, Prisma } from "@prisma/client";
-export type {Wallet as PersistenceWallet, User as PersistenceUser} from '@prisma/client'
+export type {Wallet as PersistenceWallet, User as PersistenceUser, Event as PresistenceEvent} from '@prisma/client'
 
 if (process.env["NODE_ENV"] !== "production") {
   global.prisma = prisma;

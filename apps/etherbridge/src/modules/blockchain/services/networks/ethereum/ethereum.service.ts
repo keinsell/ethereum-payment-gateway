@@ -1,6 +1,7 @@
 import Big from "big.js";
 import { BigNumber, ethers } from "ethers";
 import { BlockchainServiceConfiguration } from "../../../../../config/blockchain.config";
+import { TransactionPostedEvent } from "../../../events/posted-transaction.event";
 import { WalletGeneratedEvent } from "../../../events/wallet-generated.event";
 import { EthersMapper } from "../../../mappers/ethers.mapper";
 import { Web3Mapper } from "../../../mappers/web3.mapper";
@@ -82,7 +83,7 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
   }
 
   async createTransaction(
-    transactionRequest: ITransactionRequest,
+    transactionRequest: ITransactionRequest
   ): Promise<ITransactionRequest> {
     let tx = { ...transactionRequest };
     // 1. Get provider fee information
@@ -150,6 +151,8 @@ export class EthereumNetworkService implements IBlockchainNetworkService {
     const transaction = await this.ethers.rpc.sendTransaction(
       signedTransaction
     );
+
+    new TransactionPostedEvent(this.network, transaction);
 
     return transaction;
   }

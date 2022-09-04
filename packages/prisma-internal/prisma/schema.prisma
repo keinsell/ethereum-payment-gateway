@@ -12,27 +12,40 @@ generator client {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  firstName     String?
-  lastName      String?
-  username      String?   @unique
-  email         String?   @unique
-  password      String
-  age          Int?
-  createdAt     DateTime?  @default(now())
-  updatedAt     DateTime?  @default(now())
+  id        String    @id @default(cuid())
+  firstName String?
+  lastName  String?
+  username  String?   @unique
+  email     String?   @unique
+  password  String
+  age       Int?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
 }
 
 model Wallet {
-  id            String    @id @default(cuid())
-  
-  publicKey     String 
+  id String @id @default(cuid())
+
+  publicKey  String
   privateKey String
 
   isBusy Boolean @default(false)
-  
-  balance       BigInt    @default(0)
 
-  createdAt     DateTime?  @default(now())
-  updatedAt     DateTime?  @default(now())
+  balance BigInt @default(0)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+}
+
+model Event {
+  id Int @id @unique @default(sequence())
+
+  event       String
+  description String?
+
+  raw_information Json?
+  hash            String?
+
+  timestamp DateTime @default(now())
+  level     String?  @default("info")
 }

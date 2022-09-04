@@ -8,8 +8,20 @@ services:
     #  --fork.network rinkeby --fork.blockNumber 11261043
     ports:
       - "${GANACHE_PORT}:8545"
-    volumes:
-      - "${PWD}/.cache/ganache_data:/ganache_data"
+    # volumes:
+    #   - "${PWD}/.cache/ganache_data:/ganache_data"
+    # Development-oriented resource optimalization
+    mem_limit: 128m
+    mem_reservation: 32M
+    cpus: 0.05
+    deploy:
+      resources:
+        limits:
+          cpus: "0.05"
+          memory: 64M
+        reservations:
+          cpus: "0.05"
+          memory: 64M
 
   explorer:
     container_name: etherbridge-explorer
@@ -24,6 +36,18 @@ services:
       - APP_BASE_URL=http://localhost:3040
     volumes:
       - "${PWD}/.volumes/explorer/config.json:/usr/share/nginx/html/config.json"
+    # Development-oriented resource optimalization
+    mem_limit: 128m
+    mem_reservation: 32M
+    cpus: 0.05
+    deploy:
+      resources:
+        limits:
+          cpus: "0.05"
+          memory: 64M
+        reservations:
+          cpus: "0.05"
+          memory: 64M
 
   cockroachdb:
     container_name: etherbridge-cockroachdb
@@ -32,17 +56,41 @@ services:
     ports:
       - "${DATABASE_PORT}:26257"
       - "8080:8080"
-    volumes:
-      - "${PWD}/.cache/cockroach:/cockroach/cockroach-data"
+    # volumes:
+    #   - "${PWD}/.cache/cockroach:/cockroach/cockroach-data"
     environment:
       - COCKROACH_USER=${DATABASE_USER}
       - COCKROACH_PASSWORD=${DATABASE_PASSWORD}
       - COCKROACH_DATABASE=${DATABASE_NAME}
+    # Development-oriented resource optimalization
+    mem_limit: 256m
+    mem_reservation: 32M
+    cpus: 0.2
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 256m
+        reservations:
+          cpus: "0.05"
+          memory: 32M
 
   redis:
     container_name: etherbridge-redis
     image: redis:5.0.5-alpine
     command: ["redis-server", "--appendonly", "yes"]
+    # Development-oriented resource optimalization
+    mem_limit: 128m
+    mem_reservation: 32M
+    cpus: 0.05
+    deploy:
+      resources:
+        limits:
+          cpus: "0.05"
+          memory: 64M
+        reservations:
+          cpus: "0.05"
+          memory: 64M
 
   postgres:
     container_name: etherbridge-postgres
@@ -52,6 +100,18 @@ services:
       - POSTGRES_USER=memento
       - POSTGRES_DB=memento
       - POSTGRES_PASSWORD=memento
+    # Development-oriented resource optimalization
+    cpus: 0.01
+    mem_limit: 16m
+    mem_reservation: 8M
+    deploy:
+      resources:
+        limits:
+          cpus: "0.05"
+          memory: 16M
+        reservations:
+          cpus: "0.01"
+          memory: 8M
 
   memento:
     container_name: etherbridge-memento
@@ -69,3 +129,15 @@ services:
       - PG_USER=memento
     volumes:
       - ${PWD}/.volumes/memento:/config
+    # Development-oriented resource optimalization
+    mem_limit: 128m
+    mem_reservation: 32M
+    cpus: 0.05
+    deploy:
+      resources:
+        limits:
+          cpus: "0.05"
+          memory: 64M
+        reservations:
+          cpus: "0.05"
+          memory: 64M
