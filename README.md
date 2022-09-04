@@ -13,4 +13,5 @@ yarn dev
 
 ```
 cp example.env .env && docker compose -f "local.docker-compose.yml" up -d --build && yarn db:push && yarn dev
+docker compose -f "local.docker-compose.yml" down
 ```

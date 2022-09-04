@@ -15,6 +15,7 @@ services:
     container_name: etherbridge-explorer
     depends_on:
       - memento
+      - ganache
     image: alethio/ethereum-lite-explorer
     ports:
       - "3040:80"
@@ -42,29 +43,29 @@ services:
     container_name: etherbridge-redis
     image: redis:5.0.5-alpine
     command: ["redis-server", "--appendonly", "yes"]
-    volumes:
-      - ${PWD}/.cache/redis:/data
+
   postgres:
     container_name: etherbridge-postgres
     image: postgres:11.5-alpine
-    restart: always
+    restart: on-failure
     environment:
-      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_USER=memento
       - POSTGRES_DB=memento
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-    volumes:
-      - ${PWD}/.cache/postgresql:/var/lib/postgresql/data
+      - POSTGRES_PASSWORD=memento
+
   memento:
     container_name: etherbridge-memento
+    restart: on-failure
     image: alethio/memento:latest
     depends_on:
       - redis
       - postgres
+      - ganache
     ports:
       - 3001:3001
       # - 3000:3000
     environment:
-      - PG_PASSWORD=${DATABASE_PASSWORD}
-      - PG_USER=${DATABASE_USER}
+      - PG_PASSWORD=memento
+      - PG_USER=memento
     volumes:
       - ${PWD}/.volumes/memento:/config

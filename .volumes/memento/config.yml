@@ -25,7 +25,7 @@ db:
   dbname: "memento"
 
   # Database user (also allowed via PG_USER env var)
-  # user: "memento"
+  user: "memento"
 
 # ethereum-related fields
 eth:

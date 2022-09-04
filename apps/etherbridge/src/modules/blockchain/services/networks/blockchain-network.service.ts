@@ -16,7 +16,13 @@ import { EthereumNetworkService } from "./ethereum/ethereum.service";
 export interface IBlockchainNetworkService {
   /** Describes network connected to service. */
   network: string;
+
   createWallet(): IWallet;
+
+  /** Create transaction request with included fee configuration. */
+  createTransaction(
+    transactionRequest: ITransactionRequest
+  ): Promise<ITransactionRequest>;
 
   /** Sign transaction with privateKey attached to class. */
   signTransaction(
