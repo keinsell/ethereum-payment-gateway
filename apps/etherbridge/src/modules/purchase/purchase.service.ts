@@ -1,5 +1,5 @@
 import { PaymentGateway } from "../payment/entities/payment-gateway.enum";
-import { ProductProperties } from "../products/entities/product.entity";
+import { ProductProperties } from "../product/entities/product.entity";
 import { PurchaseProperities } from "./entities/purchase.entity";
 
 export class PurchaseService {

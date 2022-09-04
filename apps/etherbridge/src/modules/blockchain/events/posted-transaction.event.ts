@@ -1,8 +1,6 @@
-import { IWallet } from "../value-objects/wallet.blockchain.vo";
 import { BaseEvent } from "../../../commons/event/event.impl";
 import { PrettyPrint } from "../../../utilities/pretty-print.utils"
 import consola from 'consola'
-import { ITransactionReceipt } from "../value-objects/transaction-receipt.vo"
 import { ITransactionResponse } from "../value-objects/transaction-response.vo"
 
 export class TransactionPostedEvent extends BaseEvent<{

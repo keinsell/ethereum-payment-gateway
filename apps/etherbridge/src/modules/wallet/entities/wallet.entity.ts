@@ -4,7 +4,7 @@ import {
   IPublicKey,
   IPrivateKey,
 } from "../../blockchain/value-objects/wallet.blockchain.vo";
-import { HistoricalVaultProperites } from "../../history/entities/historical-balance.entity";
+import { WalletHistoricalPoint } from "../../history/entities/historical-balance.entity";
 
 // TODO: Add network prop to Wallet
 export interface WalletProperties {
@@ -12,7 +12,7 @@ export interface WalletProperties {
   privateKey: IPrivateKey;
   balance?: BigNumberish;
   isBusy: boolean;
-  historicalData?: HistoricalVaultProperites[];
+  historicalData?: WalletHistoricalPoint[];
 }
 
 export class Wallet extends Entity implements WalletProperties {
@@ -20,7 +20,7 @@ export class Wallet extends Entity implements WalletProperties {
   privateKey: IPrivateKey;
   balance: BigNumberish;
   isBusy: boolean;
-  historicalData?: HistoricalVaultProperites[];
+  historicalData?: WalletHistoricalPoint[];
 
   constructor(properties: WalletProperties, id?: string) {
     super(id);

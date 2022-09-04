@@ -63,17 +63,17 @@ services:
       - COCKROACH_PASSWORD=${DATABASE_PASSWORD}
       - COCKROACH_DATABASE=${DATABASE_NAME}
     # Development-oriented resource optimalization
-    mem_limit: 256m
-    mem_reservation: 32M
-    cpus: 0.2
+    mem_limit: 512m
+    mem_reservation: 256M
+    cpus: 0.25
     deploy:
       resources:
         limits:
-          cpus: "0.2"
-          memory: 256m
+          cpus: "0.25"
+          memory: 256M
         reservations:
-          cpus: "0.05"
-          memory: 32M
+          cpus: "0.1"
+          memory: 512m
 
   redis:
     container_name: etherbridge-redis

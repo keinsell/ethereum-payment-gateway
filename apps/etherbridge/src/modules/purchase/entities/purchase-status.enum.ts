@@ -13,15 +13,9 @@
 export enum PurchaseStatus {
   /** Default transaction status once they are created in system. */
   initalized = "INITALIZED",
-  waitingForPayment = "WAITING_FOR_PAYMENT",
-  pendingConfirmation = "PENDING_CONFIRMATION",
+  awaitingPayment = "AWAITING_PAYMENT",
   paymentRecived = "PAYMENT_RECIVED",
-  underpaid = "UNDERPAID",
-  overpaid = "OVERPAID",
-  delivery = "DELIVERY",
-  refundPending = "REFUND_PENDING",
-  missingRefundAdress = "MISSING_REFUND_ADDRESS",
-  chargeback = "CHARGEBACK",
-  expired = "EXPIRED",
+  delivery = "IN_DELIVERY",
+  cancelled = "CANCELLED",
   completed = "COMPLETED",
 }
