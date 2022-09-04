@@ -15,3 +15,7 @@ yarn dev
 cp example.env .env && docker compose -f "local.docker-compose.yml" up -d --build && yarn db:push && yarn dev
 docker compose -f "local.docker-compose.yml" down
 ```
+
+### Developer Logs
+
+> Sun 4 Sep 2022: Okay, I've lost convention of project and somehow instead payment gateway we have e-commerce platform or something like this crap, I'll keep this for some unknown purposes in future, and probably migrate it to some subdomain responsible for products (I'm supposed to do same with payments so it's really whatever what we have). Currently working on some simple payments to make it work and remove deprecated modules which hold actually working payment service.
