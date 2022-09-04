@@ -36,7 +36,7 @@ services:
       - "${PWD}/.cache/cockroach:/cockroach/cockroach-data"
     environment:
       - COCKROACH_USER=${DATABASE_USER}
-      # - COCKROACH_PASSWORD=${DATABASE_PASSWORD}
+      - COCKROACH_PASSWORD=${DATABASE_PASSWORD}
       - COCKROACH_DATABASE=${DATABASE_NAME}
 
   redis:
