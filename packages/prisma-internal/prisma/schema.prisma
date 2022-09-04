@@ -24,17 +24,54 @@ model User {
 }
 
 model Wallet {
-  id String @id @default(cuid())
-
+  id         String @id @default(cuid())
   publicKey  String
+  // TODO: Think about alternative instead privateKey since we're willing to use HD Wallets too.
   privateKey String
 
-  isBusy Boolean @default(false)
+  isHD   Boolean? @default(false)
+  isBusy Boolean  @default(false)
 
   balance BigInt @default(0)
 
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
+  lastCheckedAt DateTime? @default(now())
+  createdAt     DateTime? @default(now())
+  updatedAt     DateTime? @default(now())
+
+  history  HistoricalWallet[]
+  payments Payment[]
+}
+
+model HistoricalWallet {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+
+  balance BigInt
+
+  blockNumber     Int?
+  transactionHash String?
+
+  walletId String
+  wallet   Wallet @relation(fields: [walletId], references: [id])
+}
+
+model Purchase {
+  id String @id @default(uuid())
+  // Payment Payment[]
+}
+
+model Payment {
+  id String @id @default(uuid())
+
+  amount BigInt
+  paid   BigInt
+  status String
+
+  walletId String
+  // purchaseId String
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+  // purchase Purchase @relation(fields: [purchaseId], references: [id])
 }
 
 model Event {

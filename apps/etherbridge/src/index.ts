@@ -5,17 +5,21 @@ import {
   watchPayment,
 } from "./deprecated-modules/deprecated-payment/payment.service";
 import { BlockchainModule } from "./modules/blockchain/blockchain.module";
+import { PaymentModule } from "./modules/payment/payment.module";
 import { WalletModule } from "./modules/wallet/wallet.module";
 
 const application = new ApplicationContainer();
 application.boostrap();
 
-const payment = await initalizeNewPayment();
+const paymentx = await initalizeNewPayment();
 
-await watchPayment(payment);
+await watchPayment(paymentx);
 
-const w = WalletModule.service;
+const p = PaymentModule.service;
 const b = BlockchainModule.service;
+
+const payment = await p.initalizePayment();
+await p.watchPayment(payment);
 
 const transaction = await b.createTransaction({
   to: "0x0E5079117F05C717CF0fEC43ff5C77156395F6E0",

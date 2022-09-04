@@ -1,9 +1,11 @@
 import { Entity } from "../../../commons/entity/entity.impl";
+import { Wallet } from "../../wallet/entities/wallet.entity";
 import {
   PaymentCryptocurrency,
   PaymentCurrency,
 } from "./payment-currency.enum";
 import { PaymentGateway } from "./payment-gateway.enum";
+import { PaymentStatus } from "./payment-status.enum";
 
 export interface PaymentProperties {
   gateway: PaymentGateway;
@@ -12,6 +14,8 @@ export interface PaymentProperties {
   paid: number;
   expiration: Date;
   creation: Date;
+  wallet: Wallet;
+  status: PaymentStatus;
 }
 
 export class Payment extends Entity implements PaymentProperties {
@@ -21,6 +25,8 @@ export class Payment extends Entity implements PaymentProperties {
   paid: number;
   expiration: Date;
   creation: Date;
+  wallet: Wallet;
+  status: PaymentStatus;
 
   constructor(properties: PaymentProperties) {
     super();
@@ -30,5 +36,7 @@ export class Payment extends Entity implements PaymentProperties {
     this.paid = properties.paid;
     this.expiration = properties.expiration;
     this.creation = properties.creation;
+    this.wallet = properties.wallet;
+    this.status = properties.status;
   }
 }
