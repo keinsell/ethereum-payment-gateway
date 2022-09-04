@@ -41,7 +41,7 @@
     "@types/signale": "1.4.4",
     "@types/sinon": "10.0.13",
     "ava": "4.3.1",
-    "c8": "7.11.3",
+    "c8": "7.12.0",
     "eslint-config-nodish": "*",
     "ganache": "7.4.1",
     "sinon": "14.0.0"
