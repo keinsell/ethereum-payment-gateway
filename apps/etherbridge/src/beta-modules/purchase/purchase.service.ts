@@ -1,4 +1,4 @@
-import { PaymentGateway } from "../payment/entities/payment-gateway.enum";
+import { PaymentGateway } from "../../modules/payment/entities/payment-gateway.enum";
 import { ProductProperties } from "../product/entities/product.entity";
 import { PurchaseProperities } from "./entities/purchase.entity";
 

@@ -7,6 +7,7 @@ import { PaymentGateway } from "./entities/payment-gateway.enum";
 import { PaymentStatus } from "./entities/payment-status.enum";
 import { Payment } from "./entities/payment.entity";
 import { PaymentGuard } from "./guards/payment.guard";
+import { PaymentRepository } from "./repository/payment.repository";
 
 // ? Probably there is need to expose diffrent DTOs per payment because credit-card will different than cryptocurrency.
 
@@ -22,20 +23,23 @@ export class EthereumPaymentService implements IPaymentService {
   gateway: PaymentGateway = PaymentGateway.internal;
   walletService = WalletModule.service;
   guard = new PaymentGuard();
+  repository = new PaymentRepository();
 
   async initalizePayment(): Promise<Payment> {
     const wallet = await this.walletService.getFreeWallet();
 
-    const payment = new Payment({
-      gateway: this.gateway,
-      currency: PaymentCryptocurrency.eth,
-      amount: 1000,
-      paid: 0,
-      expiration: new Date(Date.now() + ms("3h")),
-      creation: new Date(),
-      wallet: wallet,
-      status: PaymentStatus.initalized,
-    });
+    const payment = await this.repository.save(
+      new Payment({
+        gateway: this.gateway,
+        currency: PaymentCryptocurrency.eth,
+        amount: 1000,
+        paid: 0,
+        expiration: new Date(Date.now() + ms("3h")),
+        creation: new Date(),
+        wallet: wallet,
+        status: PaymentStatus.initalized,
+      })
+    );
 
     return payment;
   }

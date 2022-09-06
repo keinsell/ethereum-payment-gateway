@@ -1,6 +1,6 @@
 import Big from "big.js";
 import { Dinero } from "dinero.js";
-import { PaymentCryptocurrency } from "../../payment/entities/payment-currency.enum";
+import { PaymentCryptocurrency } from "../../../modules/payment/entities/payment-currency.enum";
 
 export interface ICurrencyRateProperties {
   currency: PaymentCryptocurrency;

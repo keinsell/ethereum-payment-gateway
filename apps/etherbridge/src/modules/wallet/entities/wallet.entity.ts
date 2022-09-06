@@ -4,7 +4,7 @@ import {
   IPublicKey,
   IPrivateKey,
 } from "../../blockchain/value-objects/wallet.blockchain.vo";
-import { WalletHistoricalPoint } from "../../history/entities/historical-balance.entity";
+import { WalletHistoricalPoint } from "../../../beta-modules/history/entities/historical-balance.entity";
 
 // TODO: Add network prop to Wallet
 export interface WalletProperties {

@@ -1,4 +1,4 @@
-import { Payment } from "../../payment/entities/payment.entity";
+import { Payment } from "../../../modules/payment/entities/payment.entity";
 import { ProductProperties } from "../../product/entities/product.entity";
 import { PurchaseStatus } from "./purchase-status.enum";
 import { Dinero } from "dinero.js";

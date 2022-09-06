@@ -28,8 +28,8 @@ export class Payment extends Entity implements PaymentProperties {
   wallet: Wallet;
   status: PaymentStatus;
 
-  constructor(properties: PaymentProperties) {
-    super();
+  constructor(properties: PaymentProperties, id?: string) {
+    super(id);
     this.gateway = properties.gateway;
     this.currency = properties.currency;
     this.amount = properties.amount;

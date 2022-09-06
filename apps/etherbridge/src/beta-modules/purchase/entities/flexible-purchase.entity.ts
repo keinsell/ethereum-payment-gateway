@@ -1,5 +1,5 @@
 import { Dinero } from "dinero.js";
-import { PaymentProperties } from "../../payment/entities/payment.entity";
+import { PaymentProperties } from "../../../modules/payment/entities/payment.entity";
 import { ProductProperties } from "../../product/entities/product.entity";
 import { PurchaseStatus } from "./purchase-status.enum";
 
