@@ -28,7 +28,7 @@
     "@prisma/client": "latest"
   },
   "devDependencies": {
-    "eslint": "8.21.0",
+    "eslint": "8.25.0",
     "eslint-config-nodish": "*",
     "prisma": "latest",
     "rimraf": "3.0.2",
