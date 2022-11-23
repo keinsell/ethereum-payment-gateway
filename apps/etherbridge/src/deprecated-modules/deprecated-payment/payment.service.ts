@@ -6,10 +6,10 @@ import {
   KnownEvents,
 } from "../../infrastructure/event";
 import { BlockchainModule } from "../../modules/blockchain/blockchain.module";
-import { PurchaseInitalizedEvent } from "../../modules/purchase/events/purchase-initalized.event";
-import { PurchaseOverpaidEvent } from "../../modules/purchase/events/purchase-overpaid.event";
-import { PurchaseStartedWaitingForPayment } from "../../modules/purchase/events/purchase-started-watch-for-payment.event";
-import { PurchaseUnderpaidEvent } from "../../modules/purchase/events/purchase-underpaid.event";
+import { PurchaseInitalizedEvent } from "../../beta-modules/purchase/events/purchase-initalized.event";
+import { PurchaseOverpaidEvent } from "../../beta-modules/purchase/events/purchase-overpaid.event";
+import { PurchaseStartedWaitingForPayment } from "../../beta-modules/purchase/events/purchase-started-watch-for-payment.event";
+import { PurchaseUnderpaidEvent } from "../../beta-modules/purchase/events/purchase-underpaid.event";
 import { getConfirmedBalanceOnRotationWalletToDate } from "../deprecated-rotation-wallet-history/rotation-hisory.repository";
 import {
   findRotationWalletByAddress,
